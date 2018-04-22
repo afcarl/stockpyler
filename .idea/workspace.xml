@@ -2,18 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="7df9b668-f4c0-47c0-8180-696546a3217f" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Backtester.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DataManager.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Security.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Strategy.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/common.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/kibot.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/kibot_futures.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/strategies/MACrossover.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/strategies/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/talib.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OrderManager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/strategies/MACrossover.py" beforeDir="false" afterPath="$PROJECT_DIR$/strategies/MACrossover.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -24,15 +14,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="600">
-      <file leaf-file-name="kibot_futures.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/kibot_futures.txt">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="452">
-              <caret line="1998" column="30" selection-start-line="1998" selection-start-column="30" selection-end-line="1998" selection-end-column="30" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor" />
@@ -71,14 +52,23 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="MACrossover.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="MACrossover.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/strategies/MACrossover.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="395">
-              <caret line="46" column="8" selection-start-line="46" selection-start-column="8" selection-end-line="46" selection-end-column="8" />
+              <caret line="46" selection-start-line="46" selection-end-line="46" />
               <folding>
                 <element signature="e#0#29#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="OrderManager.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/OrderManager.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="412">
+              <caret line="69" column="52" selection-start-line="69" selection-start-column="52" selection-end-line="69" selection-end-column="52" />
             </state>
           </provider>
         </entry>
@@ -149,6 +139,7 @@
         <option value="$PROJECT_DIR$/Strategy.py" />
         <option value="$PROJECT_DIR$/DataManager.py" />
         <option value="$PROJECT_DIR$/strategies/MACrossover.py" />
+        <option value="$PROJECT_DIR$/OrderManager.py" />
       </list>
     </option>
   </component>
@@ -186,6 +177,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="SearchEverywhereHistoryKey" value="&#9;FILE&#9;file://C:/Users/mcdof/Documents/GitHub/stockpyler/strategies/MACrossover.py" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
@@ -314,16 +306,6 @@
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/Strategy.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" selection-start-line="5" selection-end-line="5" />
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Backtester.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
@@ -375,10 +357,27 @@
     <entry file="file://$PROJECT_DIR$/strategies/MACrossover.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="395">
-          <caret line="46" column="8" selection-start-line="46" selection-start-column="8" selection-end-line="46" selection-end-column="8" />
+          <caret line="46" selection-start-line="46" selection-end-line="46" />
           <folding>
             <element signature="e#0#29#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Strategy.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" selection-start-line="5" selection-end-line="5" />
+          <folding>
+            <element signature="e#0#35#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/OrderManager.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="412">
+          <caret line="69" column="52" selection-start-line="69" selection-start-column="52" selection-end-line="69" selection-end-column="52" />
         </state>
       </provider>
     </entry>

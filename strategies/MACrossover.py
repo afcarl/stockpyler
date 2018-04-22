@@ -44,4 +44,3 @@ class MACrossoverStrategy(Strategy):
         if fast_ema < slow_ema and prev_slow_ema < prev_fast_ema and trend_sma < prev_trend_sma:
             #go short
             pass
-        
