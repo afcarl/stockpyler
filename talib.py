@@ -364,3 +364,8 @@ def DONCH(df, n):
 def STDDEV(df, n):
     df = df.join(pd.Series(pd.rolling_std(df['Close'], n), name = 'STD_' + str(n)))
     return df
+
+def VWAP(df, n):
+    q = df.volume.values[-n:]
+    p = df.close.values[-n:]
+    return (p * q).cumsum() / q.cumsum()

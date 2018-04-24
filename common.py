@@ -1,5 +1,12 @@
 from enum import Enum
 
+class Singleton(type):
+    instance = None
+
+    def __call__(cls, *args, **kw):
+        if not cls.instance:
+             cls.instance = super(Singleton, cls).__call__(*args, **kw)
+        return cls.instance
 
 class IntervalType(Enum):
     MINUTE = "minute"
@@ -15,5 +22,13 @@ class SecurityType(Enum):
     FOREX = "forex"
     INDEX = "indices"
 
-def DoingBackTest():
-    return True
+
+class ComissionType(Enum):
+    NO_COMISSION = "no_comission"
+    FIXED = "fixed"
+    PER_CONTRACT = "per_contract"
+
+class SlippageType(Enum):
+    NO_SLIPPAGE = "no_slippage"
+    FIXED = "fixed"
+    PER_CONTRACT = "per_contract"

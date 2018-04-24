@@ -1,27 +1,14 @@
+from abc import ABC, abstractmethod
 from common import *
 from DataManager import DataManager
 
-class Security:
+class Security(ABC):
 
-    def __init__(self, symbol,
-                 security_type,
-                 interval=1,
-                 interval_type='minute',
-                 period=1,
-                 extended=None,
-                 adjusted=None):
-
+    def __init__(self, symbol, security_type, commission, commission_type, slippage, slippage_type):
         self.symbol = symbol
         self.security_type = security_type
-        self.interval = interval
-        self.interval_type = interval_type
-        self.period = period
-        self.extended_hours = extended
-        self.adjusted = adjusted
-
-        self.data_manager = DataManager(symbol,security_type,interval,interval_type,period,extended,adjusted)
-
-    def get_latest(self, period):
-        return self.data_manager.get_latest(period)
-
+        self.commission = commission
+        self.commission_type = commission_type
+        self.slippage = slippage
+        self.slippage_type = slippage_type
 
