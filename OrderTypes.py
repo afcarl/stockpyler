@@ -10,6 +10,7 @@ class Order(ABC):
     def test(self, ohlc):
         pass
 
+
 class MarketOrder(Order):
 
     def __init__(self, security, action, num_contracts):
@@ -22,7 +23,8 @@ class MarketOrder(Order):
 
     def test(self, ohlc):
         #Market orders always execute
-        return True, ohlc.open, self.num_contracts
+        return True, ohlc.open
+
 
 class LimitOrder(Order):
 
@@ -32,7 +34,6 @@ class LimitOrder(Order):
         self.limit = limit
         self.num_contracts = num_contracts
 
-
     def update(self, ohlc):
         pass
 
@@ -41,7 +42,8 @@ class LimitOrder(Order):
             return True, self.limit
         elif self.action == 'SELL' and self.limit < ohlc.high:
             return True, self.limit
-        return False, 0.0, self.num_contracts
+        return False, 0.0
+
 
 class StopOrder(Order):
 
@@ -59,7 +61,8 @@ class StopOrder(Order):
             return True, self.stop
         elif self.action == 'SELL' and self.stop > ohlc.low:
             return True, self.stop
-        return False, 0.0, self.num_contracts
+        return False, 0.0
+
 
 class TrailOrder(Order):
 
@@ -76,13 +79,13 @@ class TrailOrder(Order):
 
     def update(self, ohlc):
         if self.action == 'BUY':
-            self.stop = max(self.stop, ohlc.high* (1.0 - self.trail_percent))
+            self.stop = max(self.stop, ohlc.high * (1.0 - self.trail_percent))
         elif self.action == 'SELL':
-            self.stop = min(self.stop, ohlc.high* (1.0 + self.trail_percent))
+            self.stop = min(self.stop, ohlc.high * (1.0 + self.trail_percent))
 
     def test(self, ohlc):
         if self.action == 'BUY' and self.stop < ohlc.high:
             return True, self.stop
         elif self.action == 'SELL' and self.stop > ohlc.low:
             return True, self.stop
-        return False, 0.0, self.num_contracts
+        return False, 0.0

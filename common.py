@@ -32,3 +32,9 @@ class SlippageType(Enum):
     NO_SLIPPAGE = "no_slippage"
     FIXED = "fixed"
     PER_CONTRACT = "per_contract"
+
+class OrderExecutionType(Enum):
+    ORDER_PLACED = "order_places"
+    ORDER_EXECUTED = "order_executed"
+    ORDER_CANCELLED = "order_cancelled"
+    ORDER_NOT_PLACED = "order_not_placed"

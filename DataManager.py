@@ -1,19 +1,17 @@
 import common
-from TimeManager import TimeManager
-from HistoryManager import HistoryManager
+import TimeManager
+import HistoryManager
 
 
-class DataManager(metaclass=common.Singleton):
+class DataManager:
 
-    def __init__(self):
-        self.tm = TimeManager()
-        self.hm = HistoryManager()
+    def __init__(self, global_manager):
+        self.gm = global_manager
 
     def get_latest(self, security, interval, interval_type, period=1, offset=0):
         assert(offset >= 0, "Can't look into the future!")
-        if self.tm.doing_backtest():
-            return self.hm.get_history(security, interval, interval_type, period, offset)
+        if self.gm.doing_backtest():
+            return self.gm.hm.get_history(security, interval, interval_type, period, offset)
         else:
             #do IB stuff
             pass
-

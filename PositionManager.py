@@ -1,19 +1,16 @@
-from collections import defaultdict
-from common import *
-from OrderTypes import MarketOrder
 
-def liquidating_position(action, position):
-    if action == 'SELL' and position > 0:
-        return True
-    if action == 'BUY' and position < 0:
-        return True
-    return False
+import common
+import OrderTypes
+import OrderManager
 
-class PositionManager:
-    #TODO: actually handle futures margins. though .1 probably isn't terrible for not trading spreads
-    #Most (if not all?) requirements for fuures will be lower so let's bake in some safety
-    def __init__(self, initial_capital, stock_margin = .5, future_margin = .1):
+
+
+class PositionManager():
+    def __init__(self, global_manager, initial_capital=1000000.0, stock_margin = .5, future_margin = .1):
+        self.gm = global_manager
         self.capital = initial_capital
+        self.stock_margin = stock_margin
+        self.future_margin = future_margin
         self.margin = 0.
         self.securities = dict()
 
@@ -26,9 +23,7 @@ class PositionManager:
         if self.securities[symbol] == 0:
             del self.securities[symbol]
 
-
-
-    def position_size(self,symbol):
+    def position_size(self, symbol):
         if symbol in self.securities:
             return self.securities[symbol]
         raise KeyError("No position in {}".format(symbol))
@@ -42,33 +37,44 @@ class PositionManager:
     def liquidate(self, symbol):
         size = self.position_size(symbol)
         action = 'BUY' if size < 0 else 'SELL'
-        o = MarketOrder(symbol, action, size)
-
+        o = OrderTypes.MarketOrder(symbol, action, size)
+        self.gm.om.simple(o)
 
     def liquidate_all(self):
         for symbol in self.positions():
             self.liquidate(symbol)
 
-    def can_place_order(self, security, order):
-        #TODO: futures are hard
-
-        #we can always liquidate a position
-        if self.in_position(security.symbol):
-            if self.position_size(security.symbol) > 0 and order.action == 'SELL':
+    def can_place_order(self, order):
+        # we can always liquidate a position
+        if self.in_position(order.security.symbol):
+            if self.position_size(order.security.symbol) > 0 and order.action == 'SELL':
                 return True
-            if self.position_size(security.symbol) < 0 and order.action == 'BUY':
+            if self.position_size(order.security.symbol) < 0 and order.action == 'BUY':
                 return True
 
-        #TODO: check available margin and stuff and do the rest of the logic
+        # Let's always leave a little wiggle room
+        return self.calculate_margin_impact(order) > self.capital + 1000
 
-    def place_order(self, security, order):
-        assert(self.can_place_order(security,order), "Placed an order when unable to do so!")
+    def execute_order(self, order):
+        assert(self.can_place_order(order), "Placed an order when unable to do so!")
 
-        total_price = order.price * order.num_contracts
-        #TODO: adjust margin
-        if liquidating_position(order.action, self.position_size(security.symbol)):
+        ohlc = self.gm.dm.get_latest(order.security, self.gm.interval, self.gm.interval_type)
+        executed, price = order.test(ohlc)
+
+        if liquidating_position(order.action, self.position_size(order.security.symbol)):
             self.capital += total_price
         else:
             self.capital -= total_price
 
-        self.add_position(security.symbol, order.num_contracts)
+        self.add_position(order.security.symbol, order.num_contracts)
+
+    def calculate_net_position(self, order):
+
+
+    def calculate_margin_impact(self, order):
+        ohlc = self.gm.dm.get_latest(order.security, self.gm.interval, self.gm.interval_type)
+        executed, price = order.test(ohlc)
+        assert(executed, "Only support market orders right now!")
+        total_price = abs(order.num_contracts * price)
+        margin_percent = self.future_margin if order.security.security_type == common.SecurityType.FUTURE else self.stock_margin
+        return margin_percent * total_price

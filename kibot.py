@@ -1,15 +1,18 @@
 import urllib.request
 import pandas as pd
 import io
-from common import *
+import common
+import os
 
 
-class KibotApi:
+class KibotApi(metaclass=common.Singleton):
 
     def __init__(self):
         pass
 
-    def login(self, user, password):
+    def login(self):
+        user = os.environ['KIBOT_USER']
+        password = os.environ['KIBOT_PASS']
         url = "http://api.kibot.com?action=login&user={}&password={}".format(user,password)
         with urllib.request.urlopen(url) as response:
             html = response.read()
@@ -22,24 +25,30 @@ class KibotApi:
         url += "&regularsession=" + "0" if extended else "1"
         url += "&unadjusted=" + "0" if adjusted else "1"
 
-        if interval_type == IntervalType.MINUTE:
+        if interval_type == common.IntervalType.MINUTE:
             url += "&interval=" + str(interval)
-        elif interval_type == IntervalType.HOUR:
+        elif interval_type == common.IntervalType.HOUR:
             url += "&interval=" + str(interval * 60)
-        elif interval_type == IntervalType.DAY:
+        elif interval_type == common.IntervalType.DAY:
             url += "&interval=" + interval_type.value
-        elif interval_type == IntervalType.WEEK:
+        elif interval_type == common.IntervalType.WEEK:
             url += "&interval=" + interval_type.value
 
         request = urllib.request.Request(url)
         request.add_header('Accept-encoding', 'gzip')
+
         with urllib.request.urlopen(url) as response:
             html = response.read()
-            return pd.read_csv(io.StringIO(html.decode("utf-8")))
+
+        if html.decode("utf-8") == '401 Not Logged In':
+            self.login()
+            with urllib.request.urlopen(url) as response:
+                html = response.read()
+
+        return pd.read_csv(io.StringIO(html.decode("utf-8")))
 
 
 if __name__ == '__main__':
     agent = KibotApi()
-    agent.login('guest','guest')
-    ret = agent.request('qcom', SecurityType.STOCK, 1, IntervalType.DAY, period=100)
+    ret = agent.request('qcom', common.SecurityType.STOCK, 1, common.IntervalType.DAY, period=100)
     print(ret)

@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
-from common import *
-from DataManager import DataManager
+
 
 class Security(ABC):
 
