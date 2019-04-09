@@ -7,7 +7,7 @@ import TimeManager
 
 class GlobalManager:
 
-    def __init__(self, live, interval, interval_type):
+    def __init__(self, live=False):
 
         self.live = live
 
@@ -17,8 +17,6 @@ class GlobalManager:
         self.pm = PositionManager.PositionManager(self)
         self.tm = TimeManager.TimeManager(self)
 
-        self.interval = interval
-        self.interval_type = interval_type
 
     def doing_backtest(self):
         return self.live

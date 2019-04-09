@@ -6,11 +6,10 @@ import OrderManager
 
 
 class PositionManager():
-    def __init__(self, global_manager, initial_capital=1000000.0, stock_margin = .5, future_margin = .1):
+    def __init__(self, global_manager, initial_capital=1000000.0, stock_margin = .5):
         self.gm = global_manager
         self.capital = initial_capital
         self.stock_margin = stock_margin
-        self.future_margin = future_margin
         self.margin = 0.
         self.securities = dict()
 
@@ -69,6 +68,7 @@ class PositionManager():
         self.add_position(order.security.symbol, order.num_contracts)
 
     def calculate_net_position(self, order):
+        pass
 
 
     def calculate_margin_impact(self, order):

@@ -1,3 +1,6 @@
+import pandas as pd
+import os
+
 import common
 import TimeManager
 import kibot
@@ -8,11 +11,17 @@ In the interest of time vs space, eventually this will do something more complex
 multi security portfolio backtesting. until then, try not to add too many
 
 '''
-class HistoryManager():
+class HistoryManager:
 
     def __init__(self, global_manager):
         self.gm = global_manager
         self.histories = dict()
+
+    def add_history(self, security, path_to_file):
+        if not os.path.isfile(path_to_file):
+            raise ValueError("cant open file",path_to_file)
+        ret = pd.read_csv(path_to_file)
+        self
 
     def get_history(self, security, interval, interval_type, period, offset=0):
         assert self.gm.tm.doing_backtest()
