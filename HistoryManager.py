@@ -1,9 +1,12 @@
 import pandas as pd
 import os
 
+from collections import namedtuple
+
 import common
 import TimeManager
 import kibot
+import Feed
 
 '''HistoryManager
 
@@ -11,32 +14,40 @@ In the interest of time vs space, eventually this will do something more complex
 multi security portfolio backtesting. until then, try not to add too many
 
 '''
+
+COLUMNS = ['datetime', 'open', 'high', 'low', 'close', 'volume']
+
+OHLC = namedtuple('OHLC', ['open','high','low','close'])
+
+class History:
+    def __init__(self, df):
+        self.feeds = dict()
+        for name in df.columns.values.tolist():
+            self.feeds[name] = Feed.Feed(df[name])
+
+    def __getattr__(self, item):
+        return self.feeds[item]
+
+    def get_ohlc(self, index):
+        return OHLC(self.open, self.high, self.low, self.close)
+
 class HistoryManager:
 
     def __init__(self, global_manager):
         self.gm = global_manager
         self.histories = dict()
 
-    def add_history(self, security, path_to_file):
+    def add_history(self, security, path_to_file, names=None):
+        if names is None:
+            names = COLUMNS
         if not os.path.isfile(path_to_file):
-            raise ValueError("cant open file",path_to_file)
-        ret = pd.read_csv(path_to_file)
-        self
+            raise ValueError("cant open file", path_to_file)
+        df = pd.read_csv(path_to_file,names=names)
+        h = History(df)
+        self.histories[security] = h
+        return h
 
-    def get_history(self, security, interval, interval_type, period, offset=0):
-        assert self.gm.tm.doing_backtest()
-        assert offset > 0
+    def get_history(self, security):
+        return self.histories[security]
 
-        begin = self.gm.tm.get_current_time() - period - offset
-        if begin < 0:
-            begin = 0
-        end = self.gm.tm.get_current_time() - offset
-        if end < begin:
-            end = begin + 1
-
-        k = (security, interval, interval_type)
-        if k not in self.histories:
-            self.histories[k] = kibot.KibotApi().request(security.symbol, security.security_type, interval, interval_type, period)
-
-        return self.histories[k][begin: end]
 

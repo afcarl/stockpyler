@@ -24,7 +24,7 @@ class SecurityType(Enum):
 
 
 class ComissionType(Enum):
-    NO_COMISSION = "no_comission"
+    NO_COMMISSION = "no_commission"
     FIXED = "fixed"
     PER_CONTRACT = "per_contract"
 
@@ -33,8 +33,13 @@ class SlippageType(Enum):
     FIXED = "fixed"
     PER_CONTRACT = "per_contract"
 
-class OrderExecutionType(Enum):
-    ORDER_PLACED = "order_places"
-    ORDER_EXECUTED = "order_executed"
-    ORDER_CANCELLED = "order_cancelled"
-    ORDER_NOT_PLACED = "order_not_placed"
+class OrderExecutionStatus(Enum):
+    PLACED = "order_placed"
+    EXECUTED = "order_executed"
+    CANCELLED = "order_cancelled"
+    NOT_REJECTED = "order_rejected"
+    MARGIN = 'order_margin'
+
+class OrderAction(Enum):
+    BUY = 'buy'
+    SELL = 'sell'

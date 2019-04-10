@@ -2,6 +2,15 @@ from abc import ABC, abstractmethod
 
 #TODO: add time based stuff for if we want to close out positions due to too much time passing
 class Order(ABC):
+
+    def __init__(self, security, action, num_contracts):
+        self.id = None
+        self.status = None
+        self.security = security
+        self.action = action
+        self.num_contracts = num_contracts
+        assert num_contracts > 0, "cant buy or sell negative number of contracts!"
+
     @abstractmethod
     def update(self, ohlc):
         pass
@@ -14,25 +23,21 @@ class Order(ABC):
 class MarketOrder(Order):
 
     def __init__(self, security, action, num_contracts):
-        self.security = security
-        self.action = action
-        self.num_contracts = num_contracts
+        super().__init__(security, action, num_contracts)
 
     def update(self, ohlc):
         pass
 
     def test(self, ohlc):
         #Market orders always execute
-        return True, ohlc.open
+        return True, ohlc
 
 
 class LimitOrder(Order):
 
-    def __init__(self, security, action, limit, num_contracts):
-        self.security = security
-        self.action = action
+    def __init__(self, security, action, num_contracts, limit):
+        super().__init__(security, action, num_contracts)
         self.limit = limit
-        self.num_contracts = num_contracts
 
     def update(self, ohlc):
         pass
@@ -47,11 +52,9 @@ class LimitOrder(Order):
 
 class StopOrder(Order):
 
-    def __init__(self, security, action, stop, num_contracts):
-        self.security = security
-        self.action = action
+    def __init__(self, security, action, num_contracts, stop):
+        super().__init__(security, action, num_contracts)
         self.stop = stop
-        self.num_contracts = num_contracts
 
     def update(self, ohlc):
         pass
@@ -66,11 +69,9 @@ class StopOrder(Order):
 
 class TrailOrder(Order):
 
-    def __init__(self, security, action, trail_percent, price, num_contracts):
-        self.security = security
-        self.action = action
+    def __init__(self, security, action, num_contracts, trail_percent, price):
+        super().__init__(security, action, num_contracts)
         self.trail_percent = trail_percent
-        self.num_contracts = num_contracts
 
         if action == 'BUY':
             self.stop = price * (1.0 - trail_percent)

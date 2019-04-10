@@ -4,22 +4,21 @@ import numpy
 import pandas as pd
 import math as m
 
+import Feed
 
 
-
-
-
-#Moving Average
-def MA(df, n):
-    MA = pd.Series(pd.rolling_mean(df['Close'], n), name = 'MA_' + str(n))
-    df = df.join(MA)
-    return df
+def MA(series_or_feed, n):
+    isfeed = isinstance(series_or_feed, Feed.Feed)
+    s = series_or_feed._data if isfeed else series_or_feed
+    ret = s.rolling(n, min_periods=1).mean()
+    if isfeed:
+        ret = Feed.Feed(ret)
+    return ret
 
 #Exponential Moving Average
-def EMA(df, n):
-    EMA = pd.Series(pd.ewma(df['Close'], span = n, min_periods = n - 1), name = 'EMA_' + str(n))
-    df = df.join(EMA)
-    return df
+def EMA(series, n):
+    ema = pd.Series(pd.ewma(series, span = n, min_periods = n - 1), name = 'EMA_' + str(n))
+    return ema
 
 #Momentum
 def MOM(df, n):

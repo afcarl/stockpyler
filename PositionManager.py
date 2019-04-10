@@ -1,80 +1,125 @@
 
 import common
 import OrderTypes
-import OrderManager
+import Stockpyler
 
 
 
-class PositionManager():
-    def __init__(self, global_manager, initial_capital=1000000.0, stock_margin = .5):
-        self.gm = global_manager
-        self.capital = initial_capital
+class PositionManager:
+    def __init__(self, stockpyler, initial_cash=1000000.0, stock_margin = .5):
+        self.sp = stockpyler
+        self.current_cash = initial_cash
         self.stock_margin = stock_margin
-        self.margin = 0.
-        self.securities = dict()
+        self.current_margin = 0.
+        self.positions = dict()
 
-    def add_position(self, symbol, num_contracts):
-        if symbol not in self.securities:
-            self.securities[symbol] = 0
+        self.orders = list()
+        self.current_order_id = 0
 
-        self.securities[symbol] += num_contracts
+    def simple_order(self, order):
+        assert isinstance(order, OrderTypes.MarketOrder), "Only simple market orders are supported"
+        ret = self.can_place_order(order)
 
-        if self.securities[symbol] == 0:
-            del self.securities[symbol]
 
-    def position_size(self, symbol):
-        if symbol in self.securities:
-            return self.securities[symbol]
-        raise KeyError("No position in {}".format(symbol))
 
-    def positions(self):
-        return self.securities.keys()
+        order.id = self.next_order_id()
+        self.orders.append(order)
 
-    def in_position(self, symbol):
-        return self.position_size(symbol) != 0
 
-    def liquidate(self, symbol):
-        size = self.position_size(symbol)
+    def one_cancels_other_order(self, order1, order2):
+        assert(False, "Currently only simple market orders are supported")
+        self.one_cancels_all_order(order1, order2)
+
+    def one_cancels_all_order(self, *orders):
+        assert(False, "Currently only simple market orders are supported")
+        ids = [self.next_order_id() for _ in orders]
+
+        for id, order in zip(ids, orders):
+            if not self.sp.pm.can_place_order(order):
+                return common.OrderExecutionStatus.ORDER_NOT_PLACED
+            order.id = id
+            order.cancels = list(filter(lambda x: x != id, ids))
+            self.orders[id] = order
+
+        return common.OrderExecutionStatus.ORDER_PLACED
+
+    def next_order_id(self):
+        self.current_order_id += 1
+        return self.current_order_id
+
+    def next(self):
+        for key, order in self.orders.items():
+            ohlc = self.sp.dm.get_latest(order.security, interval, interval_type)
+            execute, price = order.test(ohlc)
+            if execute:
+                self.sp.pm.execute_order(order)
+                del self.orders[key]
+            else:
+                order.update(ohlc)
+
+    def add_position(self, security, num_contracts):
+        if security not in self.positions:
+            self.positions[security] = 0
+
+        self.positions[security] += num_contracts
+
+        if self.positions[security] == 0:
+            del self.positions[security]
+
+    def position_size(self, security):
+        if security in self.positions:
+            return self.positions[security]
+        return 0
+
+    def get_positions(self):
+        return self.positions.keys()
+
+    def in_position(self, security):
+        return self.position_size(security) != 0
+
+    def liquidate(self, security):
+        size = self.position_size(security)
         action = 'BUY' if size < 0 else 'SELL'
-        o = OrderTypes.MarketOrder(symbol, action, size)
-        self.gm.om.simple(o)
+        o = OrderTypes.MarketOrder(security, action, size)
+        self.sp.om.simple(o)
 
     def liquidate_all(self):
-        for symbol in self.positions():
-            self.liquidate(symbol)
+        for security in self.get_positions():
+            self.liquidate(security)
+
+    def increases_exposure(self, order):
+        return self.calculate_margin_impact(order) > 0
 
     def can_place_order(self, order):
-        # we can always liquidate a position
-        if self.in_position(order.security.symbol):
-            if self.position_size(order.security.symbol) > 0 and order.action == 'SELL':
-                return True
-            if self.position_size(order.security.symbol) < 0 and order.action == 'BUY':
-                return True
-
-        # Let's always leave a little wiggle room
-        return self.calculate_margin_impact(order) > self.capital + 1000
+        return self.calculate_margin_impact(order) < self.current_cash
 
     def execute_order(self, order):
-        assert(self.can_place_order(order), "Placed an order when unable to do so!")
+        assert self.can_place_order(order), "Placed an order when unable to do so!"
 
-        ohlc = self.gm.dm.get_latest(order.security, self.gm.interval, self.gm.interval_type)
+        ohlc = self.sp.hm.get_history(order.security).get_ohlc(0)
         executed, price = order.test(ohlc)
+        assert executed, "trying to execute order that wont execute!"
 
-        if liquidating_position(order.action, self.position_size(order.security.symbol)):
-            self.capital += total_price
-        else:
-            self.capital -= total_price
+        self.current_cash -= self.calculate_capital_impact(order)
+        self.current_margin += self.calculate_margin_impact(order)
 
-        self.add_position(order.security.symbol, order.num_contracts)
+        contracts = order.num_contracts * -1 if order.action == common.OrderAction.SELL else 1
+
+        self.add_position(order.security.symbol, contracts)
 
     def calculate_net_position(self, order):
         pass
 
+    def calculate_capital_impact(self, order):
+        # if ret > 0, you're increasing exposure. if ret < 0, you're decreasing exposure
+        ohlc = self.sp.hm.get_history(order.security).get_ohlc(0)
+        current_value = self.position_size(order.security) * ohlc.close
+        executed, price = order.test(ohlc)
+        order_value = price * order.num_contracts * -1 if order.action == common.OrderAction.SELL else 1
+        new_value = order_value + current_value
+        return abs(new_value) - abs(current_value)
 
     def calculate_margin_impact(self, order):
-        ohlc = self.gm.dm.get_latest(order.security, self.gm.interval, self.gm.interval_type)
-        executed, price = order.test(ohlc)
-        assert(executed, "Only support market orders right now!")
-        total_price = abs(order.num_contracts * price)
-        margin_percent = self.future_margin if order.security.security_type == common.SecurityType.FUTURE else self.stock_margin
-        return margin_percent * total_price
+        # TODO: do margin stuff here
+        return self.calculate_capital_impact(order)
+

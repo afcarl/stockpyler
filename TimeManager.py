@@ -1,7 +1,7 @@
 import common
 import datetime
 
-class TimeManager():
+class TimeManager:
 
     def __init__(self, global_manager):
         self.gm = global_manager
