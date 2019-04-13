@@ -8,12 +8,30 @@ import Stockpyler
 class Strategy:
 
     def __init__(self, stockpyler: Stockpyler.Stockpyler, securities, histories, *args, **kwargs):
+        self._done = False
         self._sp = stockpyler
         self._securities = securities
         self._histories = histories
 
+    def _next(self):
+        done = True
+        for s, h in self._histories.items():
+            h.next()
+            h._next()
+            if not h._done:
+                done = False
+        self._done = done
+        #pass
+
+    def _stop(self):
+        pass
+
     @abc.abstractmethod
     def next(self):
+        pass
+
+    @abc.abstractmethod
+    def stop(self):
         pass
 
     def get_position(self, security):
@@ -39,7 +57,3 @@ class Strategy:
         o = self._sp.pm.simple_order(o)
         return o
 
-    def done(self):
-        if not self.gm.tm.doing_backtest():
-            raise ValueError("Can't be done during live trading!")
-        return self.done

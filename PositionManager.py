@@ -19,11 +19,10 @@ class PositionManager:
     def simple_order(self, order):
         assert isinstance(order, OrderTypes.MarketOrder), "Only simple market orders are supported"
         ret = self.can_place_order(order)
-
-
-
-        order.id = self.next_order_id()
-        self.orders.append(order)
+        if ret:
+            order.id = self.next_order_id()
+            self.orders.append(order)
+        return order
 
 
     def one_cancels_other_order(self, order1, order2):
@@ -113,7 +112,7 @@ class PositionManager:
     def calculate_capital_impact(self, order):
         # if ret > 0, you're increasing exposure. if ret < 0, you're decreasing exposure
         ohlc = self.sp.hm.get_history(order.security).get_ohlc(0)
-        current_value = self.position_size(order.security) * ohlc.close
+        current_value = self.position_size(order.security) * ohlc.close[0]
         executed, price = order.test(ohlc)
         order_value = price * order.num_contracts * -1 if order.action == common.OrderAction.SELL else 1
         new_value = order_value + current_value
