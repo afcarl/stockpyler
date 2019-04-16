@@ -22,15 +22,20 @@ class Order(ABC):
 
 class MarketOrder(Order):
 
-    def __init__(self, security, action, num_contracts):
+    def __init__(self, security, action, num_contracts, execute_on_close=True):
         super().__init__(security, action, num_contracts)
+        #TODO: this framework assumes that the time between choosing to make a order and
+        #actually making said order is small, so we execute on the close rather than waiting
+        #for the next open
+        #Eventually we can break that, but later
+        self.execute_on_close = execute_on_close
 
     def update(self, ohlc):
         pass
 
     def test(self, ohlc):
         #Market orders always execute
-        return True, ohlc
+        return True, ohlc.close[0]
 
 
 class LimitOrder(Order):

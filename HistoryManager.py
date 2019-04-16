@@ -8,6 +8,7 @@ import common
 import TimeManager
 import kibot
 import Feed
+import utils
 
 '''HistoryManager
 
@@ -20,39 +21,34 @@ COLUMNS = ['datetime', 'open', 'high', 'low', 'close', 'volume']
 
 OHLC = namedtuple('OHLC', ['open','high','low','close'])
 
-class History:
+
+class History(utils.NextableClass):
+
     def __init__(self, df):
-        self._done=False
+        super().__init__()
         self.feeds = dict()
         for name in df.columns.values.tolist():
-            self.feeds[name] = Feed.Feed(df[name])
+            f = Feed.Feed(df[name])
+            self.feeds[name] = f
+            self.add_nextable(f)
 
     def __getattr__(self, item):
         if item == '_done':
             return self._done
         return self.feeds[item]
 
-    def get_ohlc(self, index):
+    def get_ohlc(self):
         return OHLC(self.open, self.high, self.low, self.close)
-
-    def _next(self):
-        done = True
-        for f, v in self.feeds.items():
-            v.next()
-            v._next()
-            if not v._done:
-                done = False
-        self._done = done
 
     @abc.abstractmethod
     def next(self):
         pass
 
-class HistoryManager:
+class HistoryManager(utils.NextableClass):
 
     def __init__(self, stockpyler):
+        super().__init__()
         self._sp = stockpyler
-        self._done = False
         self.histories = dict()
 
     def add_history(self, security, path_to_file, names=None):
@@ -63,6 +59,7 @@ class HistoryManager:
         df = pd.read_csv(path_to_file,names=names)
         h = History(df)
         self.histories[security] = h
+        self.add_nextable(h)
         return h
 
     def get_history(self, security):
@@ -71,13 +68,4 @@ class HistoryManager:
     @abc.abstractmethod
     def next(self):
         pass
-
-    def _next(self):
-        done = True
-        for k,v in self.histories.items():
-            v.next()
-            v._next()
-            if not v._done:
-                done = False
-        self._done = done
 

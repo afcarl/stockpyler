@@ -2,11 +2,12 @@
 import common
 import OrderTypes
 import Stockpyler
+import utils
 
 
-
-class PositionManager:
+class PositionManager(utils.NextableClass):
     def __init__(self, stockpyler, initial_cash=1000000.0, stock_margin = .5):
+        super().__init__()
         self.sp = stockpyler
         self.current_cash = initial_cash
         self.stock_margin = stock_margin
@@ -18,12 +19,9 @@ class PositionManager:
 
     def simple_order(self, order):
         assert isinstance(order, OrderTypes.MarketOrder), "Only simple market orders are supported"
-        ret = self.can_place_order(order)
-        if ret:
-            order.id = self.next_order_id()
-            self.orders.append(order)
+        order.id = self.next_order_id()
+        self.orders.append(order)
         return order
-
 
     def one_cancels_other_order(self, order1, order2):
         assert(False, "Currently only simple market orders are supported")
@@ -47,14 +45,19 @@ class PositionManager:
         return self.current_order_id
 
     def next(self):
-        for key, order in self.orders.items():
-            ohlc = self.sp.dm.get_latest(order.security, interval, interval_type)
+        new_orders = []
+        for order in self.orders:
+            ohlc = self.sp.hm.get_history(order.security).get_ohlc()
             execute, price = order.test(ohlc)
             if execute:
-                self.sp.pm.execute_order(order)
-                del self.orders[key]
+                if self.can_place_order(order):
+                    self.sp.pm.execute_order(order, ohlc)
+                else:
+                    order.status = common.OrderExecutionStatus.MARGIN
             else:
                 order.update(ohlc)
+                new_orders.append(order)
+        self.orders = new_orders
 
     def add_position(self, security, num_contracts):
         if security not in self.positions:
@@ -86,39 +89,50 @@ class PositionManager:
         for security in self.get_positions():
             self.liquidate(security)
 
+    def get_current_cash(self):
+        return self.current_cash
+
+    def get_current_margin(self):
+        return self.current_margin
+
+    def get_current_value(self):
+        value = 0
+        for k,v in self.positions.items():
+            value += self.sp.hm.get_history(k).get_ohlc().close[0] * v
+        return value
+
     def increases_exposure(self, order):
         return self.calculate_margin_impact(order) > 0
 
-    def can_place_order(self, order):
-        return self.calculate_margin_impact(order) < self.current_cash
+    def can_place_order(self, order, ohlc=None):
+        return self.calculate_margin_impact(order, ohlc) < self.current_cash
 
-    def execute_order(self, order):
-        assert self.can_place_order(order), "Placed an order when unable to do so!"
+    def execute_order(self, order, ohlc=None):
 
-        ohlc = self.sp.hm.get_history(order.security).get_ohlc(0)
+        ohlc = ohlc if ohlc is not None else self.sp.hm.get_history(order.security).get_ohlc()
         executed, price = order.test(ohlc)
         assert executed, "trying to execute order that wont execute!"
 
-        self.current_cash -= self.calculate_capital_impact(order)
-        self.current_margin += self.calculate_margin_impact(order)
+        self.current_cash -= self.calculate_capital_impact(order, ohlc)
+        self.current_margin += self.calculate_margin_impact(order, ohlc)
 
         contracts = order.num_contracts * -1 if order.action == common.OrderAction.SELL else 1
 
-        self.add_position(order.security.symbol, contracts)
+        self.add_position(order.security, contracts)
 
     def calculate_net_position(self, order):
         pass
 
-    def calculate_capital_impact(self, order):
+    def calculate_capital_impact(self, order, ohlc=None):
         # if ret > 0, you're increasing exposure. if ret < 0, you're decreasing exposure
-        ohlc = self.sp.hm.get_history(order.security).get_ohlc(0)
+        ohlc = ohlc if ohlc else self.sp.hm.get_history(order.security).get_ohlc()
         current_value = self.position_size(order.security) * ohlc.close[0]
         executed, price = order.test(ohlc)
         order_value = price * order.num_contracts * -1 if order.action == common.OrderAction.SELL else 1
         new_value = order_value + current_value
         return abs(new_value) - abs(current_value)
 
-    def calculate_margin_impact(self, order):
+    def calculate_margin_impact(self, order, ohlc=None):
         # TODO: do margin stuff here
-        return self.calculate_capital_impact(order)
+        return self.calculate_capital_impact(order, ohlc)
 

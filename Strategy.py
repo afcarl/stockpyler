@@ -2,26 +2,21 @@ import abc
 import talib
 import OrderTypes
 import common
-
+import itertools
 import Stockpyler
+import utils
 
-class Strategy:
+class Strategy(utils.NextableClass):
 
     def __init__(self, stockpyler: Stockpyler.Stockpyler, securities, histories, *args, **kwargs):
-        self._done = False
+        super().__init__()
         self._sp = stockpyler
         self._securities = securities
         self._histories = histories
+        self._indicators = dict()
+        self.add_nextable(*histories.values())
 
-    def _next(self):
-        done = True
-        for s, h in self._histories.items():
-            h.next()
-            h._next()
-            if not h._done:
-                done = False
-        self._done = done
-        #pass
+
 
     def _stop(self):
         pass
@@ -35,7 +30,10 @@ class Strategy:
         pass
 
     def get_position(self, security):
-        return 0
+        return self._sp.pm.position_size(security)
+
+    def get_value(self):
+        return self._sp.pm.get_current_value()
 
     #TODO: move actual impls to Stockpyler class?
     def buy(self, security, quantity):

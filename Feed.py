@@ -1,11 +1,12 @@
 import pandas as pd
 import abc
-
+import utils
 
 #Wrapper around a pd.Series
-class Feed:
+class Feed(utils.NextableClass):
     def __init__(self, data):
-        self._data = data
+        super().__init__()
+        self._data = data.tolist()
         self._datalen = len(data) - 1
         self._current_position = 0
         self._done = False

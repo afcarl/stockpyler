@@ -3,6 +3,8 @@ import HistoryManager
 import PositionManager
 import TimeManager
 
+import utils
+
 
 class Stockpyler:
 
@@ -52,5 +54,5 @@ class Stockpyler:
                     s._next()
                     new_running_strategies.append(s)
             self.running_strategies = new_running_strategies
-
+            self.pm.next()
 
