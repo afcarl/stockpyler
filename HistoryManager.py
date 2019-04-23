@@ -2,7 +2,7 @@ import pandas as pd
 import os
 import abc
 
-from collections import namedtuple
+from collections import namedtuple, defaultdict
 
 import common
 import TimeManager
@@ -18,7 +18,7 @@ multi security portfolio backtesting. until then, try not to add too many
 '''
 
 COLUMNS = ['datetime', 'open', 'high', 'low', 'close', 'volume']
-
+NORGATE_COLUMNS = ['datetime','open','high','low','close','volume','turnover','aux1','aux2','aux3']
 OHLC = namedtuple('OHLC', ['open','high','low','close'])
 
 
@@ -40,9 +40,6 @@ class History(utils.NextableClass):
     def get_ohlc(self):
         return OHLC(self.open, self.high, self.low, self.close)
 
-    @abc.abstractmethod
-    def next(self):
-        pass
 
 class HistoryManager(utils.NextableClass):
 
@@ -50,22 +47,44 @@ class HistoryManager(utils.NextableClass):
         super().__init__()
         self._sp = stockpyler
         self.histories = dict()
+        self.days_to_securities = defaultdict(lambda: [])
+        self.today = None
+        self.position = 0
+        self._indx = 0
 
     def add_history(self, security, path_to_file, names=None):
         if names is None:
-            names = COLUMNS
+            names = NORGATE_COLUMNS
         if not os.path.isfile(path_to_file):
             raise ValueError("cant open file", path_to_file)
-        df = pd.read_csv(path_to_file,names=names)
+        df = pd.read_csv(path_to_file, names=names, sep='\t', parse_dates=[0], infer_datetime_format=True)
         h = History(df)
         self.histories[security] = h
         self.add_nextable(h)
         return h
 
+    def start(self):
+        #we need to figure out all of the trading securities for all of the days we run our simulation
+        for security, history in self.histories.items():
+            for ts in history.datetime._data:
+                self.days_to_securities[ts].append(security)
+        self.days_to_securities = sorted(self.days_to_securities.items())
+        self.today = self.days_to_securities[0][0]
+
+    def get_trading_securities(self):
+        for s in self.days_to_securities[self._indx][1]:
+            yield s
+
     def get_history(self, security):
         return self.histories[security]
 
-    @abc.abstractmethod
     def next(self):
-        pass
+        for s in self.get_trading_securities():
+            self.histories[s].next()
+        if self.all_children_are_done():
+            self._done = True
+        self._indx += 1
+        self.today += pd.Timedelta(1, unit='D')
+
+
 

@@ -6,7 +6,7 @@ import utils
 
 
 class PositionManager(utils.NextableClass):
-    def __init__(self, stockpyler, initial_cash=1000000.0, stock_margin = .5):
+    def __init__(self, stockpyler, initial_cash=100.0, stock_margin = .5):
         super().__init__()
         self.sp = stockpyler
         self.current_cash = initial_cash
@@ -96,8 +96,8 @@ class PositionManager(utils.NextableClass):
         return self.current_margin
 
     def get_current_value(self):
-        value = 0
-        for k,v in self.positions.items():
+        value = self.get_current_cash()
+        for k, v in self.positions.items():
             value += self.sp.hm.get_history(k).get_ohlc().close[0] * v
         return value
 
@@ -113,11 +113,11 @@ class PositionManager(utils.NextableClass):
         executed, price = order.test(ohlc)
         assert executed, "trying to execute order that wont execute!"
 
-        self.current_cash -= self.calculate_capital_impact(order, ohlc)
+        contracts = order.num_contracts * (-1 if order.action == common.OrderAction.SELL else 1)
+
+        self.current_cash -= contracts * price
+        #TODO: fix margin stuff
         self.current_margin += self.calculate_margin_impact(order, ohlc)
-
-        contracts = order.num_contracts * -1 if order.action == common.OrderAction.SELL else 1
-
         self.add_position(order.security, contracts)
 
     def calculate_net_position(self, order):

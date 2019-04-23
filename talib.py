@@ -6,11 +6,29 @@ import math as m
 
 import Feed
 
+#These methods can take a few different things:
+# a feed
+# a pandas DataFrame or Series
+# a normal python list
 
-def MA(series_or_feed, n):
-    isfeed = isinstance(series_or_feed, Feed.Feed)
-    s = series_or_feed._data if isfeed else series_or_feed
-    ret = s.rolling(n, min_periods=1).mean()
+#if we get a Series, leave it
+#if we get a feed, pull the _data from it, then check again
+#if we get a python list, turn it into a pd.Series
+
+def MA(listlike, n):
+    isfeed = isinstance(listlike, Feed.Feed)
+
+    if isfeed:
+        listlike = listlike._data
+
+    if isinstance(listlike, pd.Series):
+        #do nothing
+        pass
+    else:
+        #probably a raw python list
+        listlike = pd.Series(listlike)
+
+    ret = listlike.rolling(n, min_periods=1).mean()
     if isfeed:
         ret = Feed.Feed(ret)
     return ret

@@ -1,8 +1,10 @@
 import time
 import abc
 
-class FrozenClass(object):
-    __isfrozen=False
+
+class FrozenClass:
+    __isfrozen = False
+
     def __init__(self):
         self.__isfrozen=False
 
@@ -13,6 +15,7 @@ class FrozenClass(object):
 
     def _freeze(self):
         self.__isfrozen = True
+
 
 def timeit(method):
     def timed(*args, **kw):
@@ -29,6 +32,7 @@ def timeit(method):
 
     return timed
 
+
 class NextableClass:
 
     def __init__(self):
@@ -43,12 +47,8 @@ class NextableClass:
 
     @abc.abstractmethod
     def next(self):
-        pass
-
-    def _next(self):
         for n in self._nextable_children:
             n.next()
-            n._next()
         if self.all_children_are_done():
             self._done = True
 
@@ -57,13 +57,5 @@ class NextableClass:
         pass
 
     @abc.abstractmethod
-    def _stop(self):
-        pass
-
-    @abc.abstractmethod
     def start(self):
-        pass
-
-    @abc.abstractmethod
-    def _start(self):
         pass

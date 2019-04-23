@@ -9,7 +9,6 @@ import utils
 class Stockpyler:
 
     def __init__(self, live=False):
-
         self.live = live
 
         self.dm = DataManager.DataManager(self)
@@ -19,7 +18,6 @@ class Stockpyler:
 
         #3ple of strategy class, args, kwargs
         self.strategies = []
-
         self.running_strategies = []
 
     def doing_backtest(self):
@@ -40,19 +38,17 @@ class Stockpyler:
 
     def init(self):
         self.init_strategies()
+        self.hm.start()
 
     def run(self):
         self.init()
-        while len(self.running_strategies) > 0:
-            new_running_strategies = []
+
+        while not self.hm._done > 0:
             for s in self.running_strategies:
-                if s._done:
-                    s.stop()
-                    s._stop()
-                else:
-                    s.next()
-                    s._next()
-                    new_running_strategies.append(s)
-            self.running_strategies = new_running_strategies
+                s.next()
             self.pm.next()
+            self.hm.next()
+        for s in self.running_strategies:
+            s.stop()
+
 

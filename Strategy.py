@@ -5,6 +5,7 @@ import common
 import itertools
 import Stockpyler
 import utils
+from collections import defaultdict
 
 class Strategy(utils.NextableClass):
 
@@ -13,27 +14,37 @@ class Strategy(utils.NextableClass):
         self._sp = stockpyler
         self._securities = securities
         self._histories = histories
-        self._indicators = dict()
+        self._indicators = defaultdict(lambda: [])
         self.add_nextable(*histories.values())
 
+    def add_indicator(self, security, ind):
+        self._indicators[security].append(ind)
 
-
-    def _stop(self):
-        pass
-
-    @abc.abstractmethod
-    def next(self):
-        pass
-
-    @abc.abstractmethod
     def stop(self):
+        #TODO: liquidate positions
         pass
+
+    def next(self):
+        for s in self.get_trading_securities():
+            for ind in self._indicators[s]:
+                ind.next()
 
     def get_position(self, security):
         return self._sp.pm.position_size(security)
 
     def get_value(self):
         return self._sp.pm.get_current_value()
+
+    def get_trading_securities(self):
+        yield from self._sp.hm.get_trading_securities()
+
+    def today(self):
+        return self._sp.hm.today
+
+    def is_trading(self, security):
+        today = self.today()
+        history = self._histories[security]
+        return today == history.datetime[0]
 
     #TODO: move actual impls to Stockpyler class?
     def buy(self, security, quantity):
