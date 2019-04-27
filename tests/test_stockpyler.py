@@ -4,6 +4,7 @@ import Strategy
 import utils
 import os
 import talib
+#import memory_profiler
 
 
 class MyStrategy(Strategy.Strategy):
@@ -19,8 +20,9 @@ class MyStrategy(Strategy.Strategy):
         print("final account value", self.get_value())
 
     def next(self):
-        #print(self.today())
+        print(self.today())
         for s in self.get_trading_securities():
+            print(s.symbol)
             price = self._histories[s].close[0]
             position = self.get_position(s)
             if price > self.ma200[0] and position == 0:
@@ -33,16 +35,18 @@ class MyStrategy(Strategy.Strategy):
 
         super().next()
 
+#@memory_profiler.profile()
 @utils.timeit
 def test_stockpyler():
-    if os.name == 'nt':
-        csv_path = 'C:/Users/mcdof/Documents/norgate_scraped/us_equities/MO.txt'
-    else:
-        csv_path = '/mnt/c/Users/mcdof/Documents/otherdata/kibot_data/stocks/daily/HPQ.txt'
+    csvs = [
+        ('MO', 'C:/Users/mcdof/Documents/norgate_scraped/us_equities/MO.txt',),
+        ('GE', 'C:/Users/mcdof/Documents/norgate_scraped/us_equities/GE.txt',),
+    ]
     sp = Stockpyler.Stockpyler(False)
 
-    security = Security.Stock('HPQ')
-    history = sp.add_history(security, csv_path)
+    for symbol, csv in csvs:
+        security = Security.Stock(symbol)
+        history = sp.add_history(security, csv)
 
     sp.add_strategy(MyStrategy)
     sp.run()

@@ -25,6 +25,7 @@ class Security(utils.FrozenClass):
 
         self._freeze()
 
+
     def __hash__(self):
         return self._hash
 
