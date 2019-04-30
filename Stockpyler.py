@@ -43,7 +43,7 @@ class Stockpyler:
     def run(self):
         self.init()
 
-        while not self.hm._done > 0:
+        while not self.hm._done:
             for s in self.running_strategies:
                 s.next()
             self.pm.next()

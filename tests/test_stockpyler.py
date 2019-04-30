@@ -5,13 +5,17 @@ import utils
 import os
 import talib
 #import memory_profiler
-
+import tulipy as ti
+import numpy as np
+import Feed
 
 class MyStrategy(Strategy.Strategy):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for s in self._securities:
+            #d = np.array(self._histories[s].close._data)
+            #ma200 = Feed.Feed(ti.ema(d,256))
             ma200 = talib.MA(self._histories[s].close, 200)
             self.ma200 = ma200
             self.add_indicator(s, ma200)
@@ -20,9 +24,8 @@ class MyStrategy(Strategy.Strategy):
         print("final account value", self.get_value())
 
     def next(self):
-        print(self.today())
+        #print(self.today())
         for s in self.get_trading_securities():
-            print(s.symbol)
             price = self._histories[s].close[0]
             position = self.get_position(s)
             if price > self.ma200[0] and position == 0:
@@ -39,8 +42,8 @@ class MyStrategy(Strategy.Strategy):
 @utils.timeit
 def test_stockpyler():
     csvs = [
-        ('MO', 'C:/Users/mcdof/Documents/norgate_scraped/us_equities/MO.txt',),
-        ('GE', 'C:/Users/mcdof/Documents/norgate_scraped/us_equities/GE.txt',),
+        ('MO', 'C:/Users/mcdof/Documents/norgate_scraped/us_equities/MO.txt.gz',),
+        #('GE', 'C:/Users/mcdof/Documents/norgate_scraped/us_equities/GE.txt',),
     ]
     sp = Stockpyler.Stockpyler(False)
 

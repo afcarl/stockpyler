@@ -69,6 +69,8 @@ class HistoryManager(utils.NextableClass):
             for ts in history.datetime._data:
                 self.days_to_securities[ts].append(security)
         self.days_to_securities = sorted(self.days_to_securities.items())
+        #for d in self.days_to_securities:
+        #    print(d)
         self.today = self.days_to_securities[0][0]
 
     def get_trading_securities(self):
@@ -79,12 +81,13 @@ class HistoryManager(utils.NextableClass):
         return self.histories[security]
 
     def next(self):
+        self.today = self.days_to_securities[self._indx]
         for s in self.get_trading_securities():
             self.histories[s].next()
         if self.all_children_are_done():
             self._done = True
         self._indx += 1
-        self.today += pd.Timedelta(1, unit='D')
+
 
 
 
