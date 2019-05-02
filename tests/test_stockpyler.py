@@ -4,7 +4,7 @@ import Strategy
 import utils
 import os
 import talib
-#import memory_profiler
+import memory_profiler
 import tulipy as ti
 import numpy as np
 import Feed
@@ -13,11 +13,11 @@ class MyStrategy(Strategy.Strategy):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.ma200s = dict()
         for s in self._securities:
-            #d = np.array(self._histories[s].close._data)
-            #ma200 = Feed.Feed(ti.ema(d,256))
-            ma200 = talib.MA(self._histories[s].close, 200)
-            self.ma200 = ma200
+            d = np.array(self._histories[s].close._data)
+            ma200 = Feed.Feed(ti.ema(d,256))
+            self.ma200s[s] = ma200
             self.add_indicator(s, ma200)
 
     def stop(self):
@@ -26,24 +26,27 @@ class MyStrategy(Strategy.Strategy):
     def next(self):
         #print(self.today())
         for s in self.get_trading_securities():
+            #print(s.symbol)
             price = self._histories[s].close[0]
             position = self.get_position(s)
-            if price > self.ma200[0] and position == 0:
-                num_stocks = int(self.get_value() / price * .95)
-                print("buying", num_stocks)
+            if price > self.ma200s[s][0] and position == 0:
+                num_stocks = int(self.get_value() / price * .45)
+                print("buying", num_stocks,s.symbol)
                 self.buy(s, num_stocks)
-            elif price < self.ma200[0] and position > 0:
-                print("closing", position)
+            elif price < self.ma200s[s][0] and position > 0:
+                print("closing", position,s.symbol)
                 self.sell(s, position)
 
         super().next()
 
-#@memory_profiler.profile()
+@memory_profiler.profile()
 @utils.timeit
 def test_stockpyler():
     csvs = [
         ('MO', 'C:/Users/mcdof/Documents/norgate_scraped/us_equities/MO.txt.gz',),
-        #('GE', 'C:/Users/mcdof/Documents/norgate_scraped/us_equities/GE.txt',),
+        ('GE', 'C:/Users/mcdof/Documents/norgate_scraped/us_equities/GE.txt.gz',),
+        ('HON', 'C:/Users/mcdof/Documents/norgate_scraped/us_equities/HON.txt.gz',),
+        ('MSI', 'C:/Users/mcdof/Documents/norgate_scraped/us_equities/MSI.txt.gz',),
     ]
     sp = Stockpyler.Stockpyler(False)
 

@@ -27,7 +27,7 @@ class History(utils.NextableClass):
     def __init__(self, df):
         super().__init__()
         self.feeds = dict()
-        for name in df.columns.values.tolist():
+        for name in df.columns.values:
             f = Feed.Feed(df[name])
             self.feeds[name] = f
             self.add_nextable(f)
