@@ -19,6 +19,16 @@ multi security portfolio backtesting. until then, try not to add too many
 
 COLUMNS = ['datetime', 'open', 'high', 'low', 'close', 'volume']
 NORGATE_COLUMNS = ['datetime','open','high','low','close','volume','turnover','aux1','aux2','aux3']
+NORGATE_USE_COLUMNS = ['datetime','open','high','low','close','volume',]
+
+NORGATE_DTYPES = {
+    'open': 'float32',
+    'high': 'float32',
+    'low': 'float32',
+    'close': 'float32',
+    'volume': 'float64',
+}
+
 OHLC = namedtuple('OHLC', ['open','high','low','close'])
 
 
@@ -57,7 +67,9 @@ class HistoryManager(utils.NextableClass):
             names = NORGATE_COLUMNS
         if not os.path.isfile(path_to_file):
             raise ValueError("cant open file", path_to_file)
-        df = pd.read_csv(path_to_file, names=names, sep='\t', parse_dates=[0], infer_datetime_format=True)
+        df = pd.read_csv(path_to_file, names=names, sep='\t', parse_dates=[0], infer_datetime_format=True, usecols=NORGATE_USE_COLUMNS)
+        #if names == NORGATE_COLUMNS:
+        #    df.drop(columns=['turnover', 'aux1', 'aux2', 'aux3'])
         h = History(df)
         self.histories[security] = h
         self.add_nextable(h)
@@ -79,6 +91,9 @@ class HistoryManager(utils.NextableClass):
 
     def get_history(self, security):
         return self.histories[security]
+
+    def get_num_trading_securities(self):
+        return len(self.days_to_securities[self._indx][1])
 
     def next(self):
         self.today = self.days_to_securities[self._indx]

@@ -4,7 +4,7 @@ import Strategy
 import utils
 import os
 import talib
-import memory_profiler
+#import memory_profiler
 import tulipy as ti
 import numpy as np
 import Feed
@@ -39,14 +39,12 @@ class MyStrategy(Strategy.Strategy):
 
         super().next()
 
-@memory_profiler.profile()
+#@memory_profiler.profile()
 @utils.timeit
 def test_stockpyler():
     csvs = [
         ('MO', 'C:/Users/mcdof/Documents/norgate_scraped/us_equities/MO.txt.gz',),
         ('GE', 'C:/Users/mcdof/Documents/norgate_scraped/us_equities/GE.txt.gz',),
-        ('HON', 'C:/Users/mcdof/Documents/norgate_scraped/us_equities/HON.txt.gz',),
-        ('MSI', 'C:/Users/mcdof/Documents/norgate_scraped/us_equities/MSI.txt.gz',),
     ]
     sp = Stockpyler.Stockpyler(False)
 

@@ -38,6 +38,9 @@ class Strategy(utils.NextableClass):
     def get_trading_securities(self):
         yield from self._sp.hm.get_trading_securities()
 
+    def get_num_trading_securities(self):
+        return self._sp.hm.get_num_trading_securities()
+
     def today(self):
         return self._sp.hm.today
 
