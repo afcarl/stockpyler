@@ -35,7 +35,7 @@ class MarketOrder(Order):
 
     def test(self, ohlc):
         #Market orders always execute
-        return True, ohlc.close[0]
+        return True, ohlc.close
 
 
 class LimitOrder(Order):

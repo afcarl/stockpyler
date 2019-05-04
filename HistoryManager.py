@@ -1,14 +1,12 @@
 import pandas as pd
 import os
-import abc
-
-from collections import namedtuple, defaultdict
-
-import common
-import TimeManager
-import kibot
-import Feed
+import sys
+import csv
+import ciso8601
 import utils
+import datetime
+
+import gzip
 
 '''HistoryManager
 
@@ -21,34 +19,62 @@ COLUMNS = ['datetime', 'open', 'high', 'low', 'close', 'volume']
 NORGATE_COLUMNS = ['datetime','open','high','low','close','volume','turnover','aux1','aux2','aux3']
 NORGATE_USE_COLUMNS = ['datetime','open','high','low','close','volume',]
 
-NORGATE_DTYPES = {
-    'open': 'float32',
-    'high': 'float32',
-    'low': 'float32',
-    'close': 'float32',
-    'volume': 'float64',
-}
 
-OHLC = namedtuple('OHLC', ['open','high','low','close'])
+class OHLCV:
+    __slots__ = ['datetime','open', 'high', 'low', 'close','volume']
+
+    def __init__(self, dt, o, h, l, c, v):
+        self.datetime = dt
+        self.open = o
+        self.high = h
+        self.low = l
+        self.close = c
+        self.volume = v
 
 
 class History(utils.NextableClass):
 
-    def __init__(self, df):
+    def __init__(self, path, chunksize=1000):
         super().__init__()
-        self.feeds = dict()
-        for name in df.columns.values:
-            f = Feed.Feed(df[name])
-            self.feeds[name] = f
-            self.add_nextable(f)
+        self._chunksize = chunksize
+        self._file = gzip.open(path, 'rt')
+        self._csvreader = csv.reader(self._file, delimiter=',')
+        self.rows = []
+        self.pos = 0
+        #skip the header because we hardcode that shit
+        next(self._csvreader)
+        #we might need to get the 0th row before start is called, so do it here
+        #and do nothing in start
+        self.rows.append(self.parse_row(next(self._csvreader)))
 
-    def __getattr__(self, item):
-        if item == '_done':
-            return self._done
-        return self.feeds[item]
+    def parse_row(self, row):
+        dt = ciso8601.parse_datetime(row[0])
+        o, h, l, c, v = float(row[1]), float(row[2]), float(row[3]), float(row[4]), float(row[5])
+        return OHLCV(dt, o, h, l, c, v)
 
-    def get_ohlc(self):
-        return OHLC(self.open, self.high, self.low, self.close)
+
+    def next(self):
+        try:
+            cur_row = self.parse_row(next(self._csvreader))
+        except StopIteration:
+            self._done = True
+            return
+        self.rows.append(cur_row)
+        self.pos += 1
+        if len(self.rows) == 2000:
+            self.rows = self.rows[1000:]
+            self.pos -= 1000
+
+    def get(self, index):
+        assert index <= 0, "Can't look into the future!"
+        # TODO: what to do about reading before start / after end?
+        # have considered negative indicies to return the 0th element, and > len(this) indicies to return the last element
+        # TODO: lazy load in/out so we hopefully dont take infinity ram
+        index = index + self.pos
+        return self.rows[index]
+
+    def __del__(self):
+        self._file.close()
 
 
 class HistoryManager(utils.NextableClass):
@@ -57,52 +83,72 @@ class HistoryManager(utils.NextableClass):
         super().__init__()
         self._sp = stockpyler
         self.histories = dict()
-        self.days_to_securities = defaultdict(lambda: [])
         self.today = None
-        self.position = 0
-        self._indx = 0
+        self.trading_securities = []
 
     def add_history(self, security, path_to_file, names=None):
         if names is None:
             names = NORGATE_COLUMNS
         if not os.path.isfile(path_to_file):
             raise ValueError("cant open file", path_to_file)
-        df = pd.read_csv(path_to_file, names=names, sep='\t', parse_dates=[0], infer_datetime_format=True, usecols=NORGATE_USE_COLUMNS)
-        #if names == NORGATE_COLUMNS:
-        #    df.drop(columns=['turnover', 'aux1', 'aux2', 'aux3'])
-        h = History(df)
+
+        h = History(path_to_file)
         self.histories[security] = h
         self.add_nextable(h)
         return h
 
     def start(self):
+        earliest = ciso8601.parse_datetime('9999-01-01')
         #we need to figure out all of the trading securities for all of the days we run our simulation
         for security, history in self.histories.items():
-            for ts in history.datetime._data:
-                self.days_to_securities[ts].append(security)
-        self.days_to_securities = sorted(self.days_to_securities.items())
-        #for d in self.days_to_securities:
-        #    print(d)
-        self.today = self.days_to_securities[0][0]
+            begin_ts = history.get(0).datetime
+            if begin_ts < earliest:
+                earliest = begin_ts
+        self.today = earliest
+        self.trading_securities = self._determine_trading_securities()
+
+    def _determine_trading_securities(self):
+        ret = []
+        for security, history in self.histories.items():
+            if history.get(0).datetime == self.today:
+                ret.append(security)
+        return ret
 
     def get_trading_securities(self):
-        for s in self.days_to_securities[self._indx][1]:
-            yield s
+        return self.trading_securities
 
     def get_history(self, security):
         return self.histories[security]
 
     def get_num_trading_securities(self):
-        return len(self.days_to_securities[self._indx][1])
+        return len(self.get_trading_securities())
 
     def next(self):
-        self.today = self.days_to_securities[self._indx]
         for s in self.get_trading_securities():
             self.histories[s].next()
         if self.all_children_are_done():
             self._done = True
-        self._indx += 1
+        self.today += datetime.timedelta(days=1)
+        self.trading_securities = self._determine_trading_securities()
 
 
+
+
+class SimpleMovingAverage(utils.NextableClass):
+
+    def __init__(self, history, member, period, *args, **kwargs):
+        super().__init__()
+        self._history = history
+        self._member = member
+        self._period = period
+        self._cursize = 0
+        self._cursum = 0
+        self._val = 0
+
+    def start(self):
+        self._val = self._history[self._member][0]
+
+    def next(self):
+        pass
 
 

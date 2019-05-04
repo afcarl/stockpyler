@@ -1,7 +1,6 @@
 
 import common
 import OrderTypes
-import Stockpyler
 import utils
 
 
@@ -47,7 +46,7 @@ class PositionManager(utils.NextableClass):
     def next(self):
         new_orders = []
         for order in self.orders:
-            ohlc = self.sp.hm.get_history(order.security).get_ohlc()
+            ohlc = self.sp.hm.get_history(order.security).get(0)
             execute, price = order.test(ohlc)
             if execute:
                 if self.can_place_order(order):
@@ -98,7 +97,7 @@ class PositionManager(utils.NextableClass):
     def get_current_value(self):
         value = self.get_current_cash()
         for k, v in self.positions.items():
-            value += self.sp.hm.get_history(k).get_ohlc().close[0] * v
+            value += self.sp.hm.get_history(k).get(0).close * v
         return value
 
     def increases_exposure(self, order):
@@ -125,8 +124,8 @@ class PositionManager(utils.NextableClass):
 
     def calculate_capital_impact(self, order, ohlc=None):
         # if ret > 0, you're increasing exposure. if ret < 0, you're decreasing exposure
-        ohlc = ohlc if ohlc else self.sp.hm.get_history(order.security).get_ohlc()
-        current_value = self.position_size(order.security) * ohlc.close[0]
+        ohlc = ohlc if ohlc else self.sp.hm.get_history(order.security).get(0)
+        current_value = self.position_size(order.security) * ohlc.close
         executed, price = order.test(ohlc)
         order_value = price * order.num_contracts * -1 if order.action == common.OrderAction.SELL else 1
         new_value = order_value + current_value

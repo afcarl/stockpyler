@@ -2,9 +2,10 @@ import DataManager
 import HistoryManager
 import PositionManager
 import TimeManager
-
+import tracemalloc
 import utils
-
+import os
+import linecache
 
 class Stockpyler:
 
@@ -41,13 +42,18 @@ class Stockpyler:
         self.hm.start()
 
     def run(self):
+        #tracemalloc.start()
         self.init()
-
+        counter = 0
         while not self.hm._done:
             for s in self.running_strategies:
                 s.next()
             self.pm.next()
             self.hm.next()
+            counter += 1
+            #if counter %1000 == 0:
+            #    snapshot = tracemalloc.take_snapshot()
+            #    utils.display_top(snapshot)
         for s in self.running_strategies:
             s.stop()
 
