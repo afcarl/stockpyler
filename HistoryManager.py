@@ -21,7 +21,7 @@ NORGATE_USE_COLUMNS = ['datetime','open','high','low','close','volume',]
 
 
 class OHLCV:
-    __slots__ = ['datetime','open', 'high', 'low', 'close','volume']
+    __slots__ = ['datetime', 'open', 'high', 'low', 'close', 'volume']
 
     def __init__(self, dt, o, h, l, c, v):
         self.datetime = dt
@@ -30,6 +30,9 @@ class OHLCV:
         self.low = l
         self.close = c
         self.volume = v
+
+    def __getitem__(self, item):
+        return self.__getattribute__(item)
 
 
 class History(utils.NextableClass):
@@ -65,13 +68,18 @@ class History(utils.NextableClass):
             self.rows = self.rows[1000:]
             self.pos -= 1000
 
-    def get(self, index):
-        assert index <= 0, "Can't look into the future!"
-        # TODO: what to do about reading before start / after end?
-        # have considered negative indicies to return the 0th element, and > len(this) indicies to return the last element
-        # TODO: lazy load in/out so we hopefully dont take infinity ram
-        index = index + self.pos
-        return self.rows[index]
+    def __getitem__(self, item):
+        if isinstance(item,slice):
+            assert item.start < 0, "Only support slices from the end of the history"
+            return self.rows[item]
+        else:
+            assert item <= 0, "Can't look into the future!"
+            # TODO: what to do about reading before start / after end?
+            # have considered negative indicies to return the 0th element, and > len(this) indicies to return the last element
+            # TODO: lazy load in/out so we hopefully dont take infinity ram
+            index = item + self.pos
+            return self.rows[index]
+
 
     def __del__(self):
         self._file.close()
@@ -101,7 +109,7 @@ class HistoryManager(utils.NextableClass):
         earliest = ciso8601.parse_datetime('9999-01-01')
         #we need to figure out all of the trading securities for all of the days we run our simulation
         for security, history in self.histories.items():
-            begin_ts = history.get(0).datetime
+            begin_ts = history[0].datetime
             if begin_ts < earliest:
                 earliest = begin_ts
         self.today = earliest
@@ -110,7 +118,7 @@ class HistoryManager(utils.NextableClass):
     def _determine_trading_securities(self):
         ret = []
         for security, history in self.histories.items():
-            if history.get(0).datetime == self.today:
+            if history[0].datetime == self.today:
                 ret.append(security)
         return ret
 
@@ -134,21 +142,7 @@ class HistoryManager(utils.NextableClass):
 
 
 
-class SimpleMovingAverage(utils.NextableClass):
 
-    def __init__(self, history, member, period, *args, **kwargs):
-        super().__init__()
-        self._history = history
-        self._member = member
-        self._period = period
-        self._cursize = 0
-        self._cursum = 0
-        self._val = 0
 
-    def start(self):
-        self._val = self._history[self._member][0]
-
-    def next(self):
-        pass
 
 
