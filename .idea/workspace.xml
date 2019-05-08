@@ -2,16 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0114f111-4e29-4961-bb89-515b5ab8d54d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Indicators.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/tests/test_sma.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Feed.py" beforeDir="false" afterPath="$PROJECT_DIR$/Feed.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/HistoryManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/HistoryManager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PositionManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/PositionManager.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kibot_futures.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/mprofile_20190503223811.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/mprofile_20190504023750.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/mprofile_20190504024919.dat" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/norgate.data.dotnet.dll" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/talib.py" beforeDir="false" afterPath="$PROJECT_DIR$/talib.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_sma.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_sma.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/tests/test_stockpyler.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_stockpyler.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -26,19 +21,10 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Stockpyler.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret column="18" selection-start-column="18" selection-end-column="18" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/HistoryManager.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="66" column="34" lean-forward="true" selection-start-line="66" selection-start-column="34" selection-end-line="68" selection-end-column="28" />
+            <state relative-caret-position="748">
+              <caret line="53" selection-start-line="53" selection-end-line="53" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -47,11 +33,24 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Strategy.py">
+        <entry file="file://$PROJECT_DIR$/Feed.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state>
+            <state relative-caret-position="272">
+              <caret line="18" column="18" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="18" />
               <folding>
-                <element signature="e#1#18#0" expanded="true" />
+                <element signature="e#1#13#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/talib.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="238">
+              <caret line="18" selection-start-line="18" selection-end-line="19" />
+              <folding>
+                <element signature="e#2#14#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -61,7 +60,7 @@
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="51">
-              <caret line="3" selection-start-line="3" selection-end-line="3" />
+              <caret line="3" column="39" selection-start-line="3" selection-start-column="39" selection-end-line="3" selection-end-column="39" />
             </state>
           </provider>
         </entry>
@@ -69,8 +68,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tests/test_stockpyler.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="56">
-              <caret line="41" column="10" selection-start-line="41" selection-start-column="10" selection-end-line="41" selection-end-column="10" />
+            <state relative-caret-position="153">
+              <caret line="14" selection-start-line="14" selection-end-line="14" />
               <folding>
                 <element signature="e#0#17#0" expanded="true" />
               </folding>
@@ -79,22 +78,22 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/tests/test_sma.py">
+        <entry file="file://$PROJECT_DIR$/Indicators.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="15" selection-start-line="15" selection-end-line="15" />
-              <folding>
-                <element signature="e#0#17#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="272">
+              <caret line="16" column="19" selection-start-line="16" selection-start-column="19" selection-end-line="16" selection-end-column="19" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Indicators.py">
+        <entry file="file://$PROJECT_DIR$/tests/test_sma.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="141">
-              <caret line="16" column="19" selection-start-line="16" selection-start-column="19" selection-end-line="16" selection-end-column="19" />
+            <state relative-caret-position="353">
+              <caret line="24" column="21" selection-start-line="24" selection-start-column="21" selection-end-line="24" selection-end-column="21" />
+              <folding>
+                <element signature="e#0#17#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -102,7 +101,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/PositionManager.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1479">
+            <state relative-caret-position="1802">
               <caret line="108" column="46" selection-start-line="108" selection-start-column="46" selection-end-line="108" selection-end-column="46" />
               <folding>
                 <element signature="e#1#14#0" expanded="true" />
@@ -114,7 +113,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/OrderTypes.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="311">
+            <state relative-caret-position="629">
               <caret line="37" column="26" selection-start-line="37" selection-start-column="26" selection-end-line="37" selection-end-column="26" />
             </state>
           </provider>
@@ -144,6 +143,7 @@
       <find>days_to_securities</find>
       <find>position</find>
       <find>get_ohlc</find>
+      <find>SMA</find>
     </findStrings>
     <replaceStrings>
       <replace>/</replace>
@@ -167,7 +167,6 @@
         <option value="$PROJECT_DIR$/strategies/test_stockpyler.py" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/norgate_scraper.py" />
-        <option value="$PROJECT_DIR$/talib.py" />
         <option value="$PROJECT_DIR$/norgate_loader.py" />
         <option value="$PROJECT_DIR$/main.py" />
         <option value="$PROJECT_DIR$/Security.py" />
@@ -176,12 +175,13 @@
         <option value="$PROJECT_DIR$/convert_norgate_files.py" />
         <option value="$PROJECT_DIR$/OrderTypes.py" />
         <option value="$PROJECT_DIR$/Strategy.py" />
-        <option value="$PROJECT_DIR$/Feed.py" />
         <option value="$PROJECT_DIR$/PositionManager.py" />
-        <option value="$PROJECT_DIR$/tests/test_stockpyler.py" />
-        <option value="$PROJECT_DIR$/tests/test_sma.py" />
-        <option value="$PROJECT_DIR$/HistoryManager.py" />
         <option value="$PROJECT_DIR$/Indicators.py" />
+        <option value="$PROJECT_DIR$/Feed.py" />
+        <option value="$PROJECT_DIR$/talib.py" />
+        <option value="$PROJECT_DIR$/tests/test_stockpyler.py" />
+        <option value="$PROJECT_DIR$/HistoryManager.py" />
+        <option value="$PROJECT_DIR$/tests/test_sma.py" />
       </list>
     </option>
   </component>
@@ -246,7 +246,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python tests.pytest in stockpyler">
+  <component name="RunManager" selected="Python tests.pytest in test_sma.py">
     <configuration name="convert_norgate_files" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="stockpyler" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -313,28 +313,6 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="norgate_scraper" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="stockpyler" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/norgate_scraper.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-      <option name="REDIRECT_INPUT" value="false" />
-      <option name="INPUT_FILE" value="" />
-      <method v="2" />
-    </configuration>
     <configuration name="pytest in stockpyler" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
       <module name="stockpyler" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -351,20 +329,36 @@
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
+    <configuration name="pytest in test_sma.py" type="tests" factoryName="py.test" temporary="true" nameIsGenerated="true">
+      <module name="stockpyler" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/tests" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_keywords" value="&quot;&quot;" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/test_sma.py&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue="Python.main" />
-      <item itemvalue="Python.norgate_scraper" />
       <item itemvalue="Python.norgate_loader" />
       <item itemvalue="Python.convert_norgate_files" />
       <item itemvalue="Python tests.pytest in stockpyler" />
+      <item itemvalue="Python tests.pytest in test_sma.py" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python tests.pytest in stockpyler" />
+        <item itemvalue="Python tests.pytest in test_sma.py" />
         <item itemvalue="Python.main" />
+        <item itemvalue="Python tests.pytest in stockpyler" />
         <item itemvalue="Python.convert_norgate_files" />
         <item itemvalue="Python.norgate_loader" />
-        <item itemvalue="Python.norgate_scraper" />
       </list>
     </recent_temporary>
   </component>
@@ -405,50 +399,54 @@
       <workItem from="1556939589733" duration="2978000" />
       <workItem from="1556942798930" duration="10645000" />
       <workItem from="1556983928491" duration="6940000" />
+      <workItem from="1557027641591" duration="2744000" />
+      <workItem from="1557105676454" duration="598000" />
+      <workItem from="1557201295524" duration="3543000" />
+      <workItem from="1557278184222" duration="300000" />
     </task>
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="pytest_in_stockpyler - 2019.05.04 at 17h 38m 04s.xml">
-      <configuration name="pytest in stockpyler" configurationId="tests" />
+    <history-entry file="pytest_in_test_sma_py - 2019.05.07 at 19h 26m 59s.xml">
+      <configuration name="pytest in test_sma.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="pytest_in_stockpyler - 2019.05.04 at 17h 38m 32s.xml">
-      <configuration name="pytest in stockpyler" configurationId="tests" />
+    <history-entry file="pytest_in_test_sma_py - 2019.05.07 at 19h 27m 43s.xml">
+      <configuration name="pytest in test_sma.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="pytest_in_stockpyler - 2019.05.04 at 17h 38m 34s.xml">
-      <configuration name="pytest in stockpyler" configurationId="tests" />
+    <history-entry file="pytest_in_test_sma_py - 2019.05.07 at 19h 28m 33s.xml">
+      <configuration name="pytest in test_sma.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="pytest_in_stockpyler - 2019.05.04 at 17h 39m 36s.xml">
-      <configuration name="pytest in stockpyler" configurationId="tests" />
+    <history-entry file="pytest_in_test_sma_py - 2019.05.07 at 19h 28m 36s.xml">
+      <configuration name="pytest in test_sma.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="pytest_in_stockpyler - 2019.05.04 at 17h 41m 42s.xml">
-      <configuration name="pytest in stockpyler" configurationId="tests" />
+    <history-entry file="pytest_in_test_sma_py - 2019.05.07 at 19h 30m 20s.xml">
+      <configuration name="pytest in test_sma.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="pytest_in_stockpyler - 2019.05.04 at 17h 42m 22s.xml">
-      <configuration name="pytest in stockpyler" configurationId="tests" />
+    <history-entry file="pytest_in_test_sma_py - 2019.05.07 at 19h 30m 38s.xml">
+      <configuration name="pytest in test_sma.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="pytest_in_stockpyler - 2019.05.04 at 17h 42m 45s.xml">
-      <configuration name="pytest in stockpyler" configurationId="tests" />
+    <history-entry file="pytest_in_test_sma_py - 2019.05.07 at 19h 30m 58s.xml">
+      <configuration name="pytest in test_sma.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="pytest_in_stockpyler - 2019.05.04 at 17h 43m 09s.xml">
-      <configuration name="pytest in stockpyler" configurationId="tests" />
+    <history-entry file="pytest_in_test_sma_py - 2019.05.07 at 19h 31m 51s.xml">
+      <configuration name="pytest in test_sma.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="pytest_in_stockpyler - 2019.05.04 at 17h 54m 41s.xml">
-      <configuration name="pytest in stockpyler" configurationId="tests" />
+    <history-entry file="pytest_in_test_sma_py - 2019.05.07 at 19h 33m 07s.xml">
+      <configuration name="pytest in test_sma.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="pytest_in_stockpyler - 2019.05.04 at 17h 54m 44s.xml">
-      <configuration name="pytest in stockpyler" configurationId="tests" />
+    <history-entry file="pytest_in_test_sma_py - 2019.05.07 at 19h 34m 28s.xml">
+      <configuration name="pytest in test_sma.py" configurationId="tests" />
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="113321000" />
+    <option name="totallyTimeSpent" value="120506000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Favorites" order="0" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.24664879" />
+      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.2600536" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Database Changes" order="0" />
       <window_info anchor="bottom" id="Terminal" order="1" />
@@ -458,7 +456,7 @@
       <window_info anchor="bottom" id="Docker" order="5" show_stripe_button="false" />
       <window_info anchor="bottom" id="Message" order="6" />
       <window_info anchor="bottom" id="Find" order="7" />
-      <window_info active="true" anchor="bottom" id="Run" order="8" visible="true" weight="0.44413012" />
+      <window_info anchor="bottom" id="Run" order="8" weight="0.44413012" />
       <window_info anchor="bottom" id="Debug" order="9" weight="0.39886847" />
       <window_info anchor="bottom" id="Cvs" order="10" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="11" weight="0.4" />
@@ -486,13 +484,18 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/HistoryManager.py</url>
-          <line>134</line>
+          <line>110</line>
           <option name="timeStamp" value="19" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/Indicators.py</url>
           <line>21</line>
           <option name="timeStamp" value="31" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/tests/test_sma.py</url>
+          <line>24</line>
+          <option name="timeStamp" value="39" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
@@ -501,9 +504,10 @@
     <SUITE FILE_PATH="coverage/stockpyler$convert_norgate_files.coverage" NAME="convert_norgate_files Coverage Results" MODIFIED="1556945168574" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/stockpyler$norgate_scraper.coverage" NAME="norgate_scraper Coverage Results" MODIFIED="1555717049588" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/stockpyler$norgate_loader.coverage" NAME="norgate_loader Coverage Results" MODIFIED="1555722176653" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/stockpyler$pytest_in_stockpyler.coverage" NAME="pytest in stockpyler Coverage Results" MODIFIED="1557010483533" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/stockpyler$pytest_in_stockpyler.coverage" NAME="pytest in stockpyler Coverage Results" MODIFIED="1557272876922" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/stockpyler$pytest_in_test_stockpyler_py.coverage" NAME="pytest in stockpyler Coverage Results" MODIFIED="1554952948917" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/stockpyler$main.coverage" NAME="main Coverage Results" MODIFIED="1557006139734" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/stockpyler$main.coverage" NAME="main Coverage Results" MODIFIED="1557273423787" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/stockpyler$pytest_in_test_sma_py.coverage" NAME="pytest in test_sma.py Coverage Results" MODIFIED="1557275664961" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/GlobalManager.py" />
@@ -517,9 +521,7 @@
     <entry file="file://$PROJECT_DIR$/__init__.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/kibot_futures.txt">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
+    <entry file="file://$PROJECT_DIR$/kibot_futures.txt" />
     <entry file="file://C:/Anaconda3/Lib/site-packages/pandas/core/common.py" />
     <entry file="file://C:/Anaconda3/Lib/site-packages/pandas/core/indexes/base.py" />
     <entry file="file://C:/Anaconda3/Lib/site-packages/pandas/core/series.py" />
@@ -604,16 +606,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/talib.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" selection-start-line="1" selection-end-line="1" />
-          <folding>
-            <element signature="e#2#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/Python37/Lib/encodings/cp1252.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="122">
@@ -686,38 +678,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Feed.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#1#13#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" selection-start-line="3" selection-end-line="3" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Strategy.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <folding>
-            <element signature="e#1#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/OrderTypes.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="311">
-          <caret line="37" column="26" selection-start-line="37" selection-start-column="26" selection-end-line="37" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$APPLICATION_HOME_DIR$/helpers/pycharm/_jb_pytest_runner.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="51">
@@ -732,19 +692,114 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/test_sma.py">
+    <entry file="file://$PROJECT_DIR$/Strategy.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" selection-start-line="15" selection-end-line="15" />
+        <state>
+          <folding>
+            <element signature="e#1#18#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python37/Lib/site-packages/pandas/io/parsers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="122">
+          <caret line="3189" selection-start-line="3189" selection-end-line="3189" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python37/Lib/site-packages/pandas/io/date_converters.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="612">
+          <caret line="39" selection-start-line="39" selection-end-line="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python37/Lib/site-packages/pandas/core/generic.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="122">
+          <caret line="5066" selection-start-line="5066" selection-end-line="5066" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python37/Lib/site-packages/pandas/core/internals/blocks.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="115">
+          <caret line="3094" selection-start-line="3094" selection-end-line="3094" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python37/Lib/site-packages/pandas/core/internals/managers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="122">
+          <caret line="1480" selection-start-line="1480" selection-end-line="1480" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://C:/Python37/Lib/site-packages/pandas/core/window.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="115">
+          <caret line="1727" selection-start-line="1727" selection-end-line="1727" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/HistoryManager.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="748">
+          <caret line="53" selection-start-line="53" selection-end-line="53" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Feed.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="18" column="18" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="18" />
+          <folding>
+            <element signature="e#1#13#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/talib.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="18" selection-start-line="18" selection-end-line="19" />
+          <folding>
+            <element signature="e#2#14#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" column="39" selection-start-line="3" selection-start-column="39" selection-end-line="3" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/test_stockpyler.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="14" selection-start-line="14" selection-end-line="14" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Indicators.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="16" column="19" selection-start-line="16" selection-start-column="19" selection-end-line="16" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/PositionManager.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1479">
+        <state relative-caret-position="1802">
           <caret line="108" column="46" selection-start-line="108" selection-start-column="46" selection-end-line="108" selection-end-column="46" />
           <folding>
             <element signature="e#1#14#0" expanded="true" />
@@ -752,30 +807,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/test_stockpyler.py">
+    <entry file="file://$PROJECT_DIR$/OrderTypes.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="56">
-          <caret line="41" column="10" selection-start-line="41" selection-start-column="10" selection-end-line="41" selection-end-column="10" />
+        <state relative-caret-position="629">
+          <caret line="37" column="26" selection-start-line="37" selection-start-column="26" selection-end-line="37" selection-end-column="26" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/tests/test_sma.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="353">
+          <caret line="24" column="21" selection-start-line="24" selection-start-column="21" selection-end-line="24" selection-end-column="21" />
           <folding>
             <element signature="e#0#17#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/HistoryManager.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="66" column="34" lean-forward="true" selection-start-line="66" selection-start-column="34" selection-end-line="68" selection-end-column="28" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Indicators.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="141">
-          <caret line="16" column="19" selection-start-line="16" selection-start-column="19" selection-end-line="16" selection-end-column="19" />
         </state>
       </provider>
     </entry>

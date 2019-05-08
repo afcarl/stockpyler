@@ -7,6 +7,7 @@ import utils
 import datetime
 
 import gzip
+import Feed
 
 '''HistoryManager
 
@@ -40,49 +41,24 @@ class History(utils.NextableClass):
     def __init__(self, path, chunksize=1000):
         super().__init__()
         self._chunksize = chunksize
-        self._file = gzip.open(path, 'rt')
-        self._csvreader = csv.reader(self._file, delimiter=',')
-        self.rows = []
-        self.pos = 0
-        #skip the header because we hardcode that shit
-        next(self._csvreader)
-        #we might need to get the 0th row before start is called, so do it here
-        #and do nothing in start
-        self.rows.append(self.parse_row(next(self._csvreader)))
+        self.feeds = dict()
+        for col in NORGATE_USE_COLUMNS:
+            df = pd.read_csv(path,
+                             #names=NORGATE_COLUMNS,
+                             sep=',',
+                             parse_dates=[0],
+                             infer_datetime_format=True,
+                             #date_parser=ciso8601.parse_datetime,
+                             usecols=[col],
+                             chunksize=chunksize)
+            feed = Feed.Feed(df)
+            self.feeds[col] = feed
+            self.add_nextable(feed)
 
-    def parse_row(self, row):
-        dt = ciso8601.parse_datetime(row[0])
-        o, h, l, c, v = float(row[1]), float(row[2]), float(row[3]), float(row[4]), float(row[5])
-        return OHLCV(dt, o, h, l, c, v)
-
-
-    def next(self):
-        try:
-            cur_row = self.parse_row(next(self._csvreader))
-        except StopIteration:
-            self._done = True
-            return
-        self.rows.append(cur_row)
-        self.pos += 1
-        if len(self.rows) == 2000:
-            self.rows = self.rows[1000:]
-            self.pos -= 1000
-
-    def __getitem__(self, item):
-        if isinstance(item,slice):
-            assert item.start < 0, "Only support slices from the end of the history"
-            return self.rows[item]
-        else:
-            assert item <= 0, "Can't look into the future!"
-            # TODO: what to do about reading before start / after end?
-            # have considered negative indicies to return the 0th element, and > len(this) indicies to return the last element
-            # TODO: lazy load in/out so we hopefully dont take infinity ram
-            index = item + self.pos
-            return self.rows[index]
-
-
-    def __del__(self):
-        self._file.close()
+    def __getattr__(self, item):
+        if item == '_done':
+            return self._done
+        return self.feeds[item]
 
 
 class HistoryManager(utils.NextableClass):

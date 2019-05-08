@@ -3,7 +3,7 @@ import Security
 import Strategy
 import utils
 #import memory_profiler
-
+import talib
 
 class MyStrategy(Strategy.Strategy):
 
@@ -11,7 +11,8 @@ class MyStrategy(Strategy.Strategy):
         super().__init__(*args, **kwargs)
         self.ma200s = dict()
         for s in self._securities:
-            self.ma200s = SimpleMovingAverage(self._histories[s],'close',200)
+            #self.ma200s = SimpleMovingAverage(self._histories[s],'close',200)
+            self.ma200s[s] = talib.SMA(self._histories[s].close._data,200)
             #d = np.array(self._histories[s].close._data)
             #$ma200 = Feed.Feed(ti.ema(d,256))
             #self.ma200s[s] = ma200
@@ -39,7 +40,6 @@ class MyStrategy(Strategy.Strategy):
 #@memory_profiler.profile()
 @utils.timeit
 def test_stockpyler():
-    return
     csvs = [
         ('MO', 'C:/Users/mcdof/Documents/norgate_scraped2/us_equities/MO.txt.gz',),
         ('GE', 'C:/Users/mcdof/Documents/norgate_scraped2/us_equities/GE.txt.gz',),

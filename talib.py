@@ -15,22 +15,8 @@ import Feed
 #if we get a feed, pull the _data from it, then check again
 #if we get a python list, turn it into a pd.Series
 
-def MA(listlike, n):
-    isfeed = isinstance(listlike, Feed.Feed)
-
-    if isfeed:
-        listlike = listlike._data
-
-    if isinstance(listlike, pd.Series):
-        #do nothing
-        pass
-    else:
-        #probably a raw python list
-        listlike = pd.Series(listlike)
-
+def SMA(listlike, n):
     ret = listlike.rolling(n, min_periods=1).mean()
-    if isfeed:
-        ret = Feed.Feed(ret)
     return ret
 
 #Exponential Moving Average

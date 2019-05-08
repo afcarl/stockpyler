@@ -10,13 +10,14 @@ spec = [
     ('_done',boolean),
 ]
 
-#Wrapper around a pd.Series
+
 class Feed(utils.NextableClass):
-    def __init__(self, data):
+    def __init__(self, chunks):
         super().__init__()
 
-        self._data = data
-        self._datalen = len(data) - 1
+        self._chunks = chunks
+        self._data = next(chunks)
+        self._chunksize = self._chunks.chunksize
         self._current_position = 0
         self._done = False
 
@@ -36,9 +37,4 @@ class Feed(utils.NextableClass):
         if index > self._datalen:
             index = self._datalen - 1
         return self._data[index]
-
-#class Indicator(Feed):
-
-#    def __init__(self, df, indicator_func, *args, **kwargs):
-#        super().__init__()
 
