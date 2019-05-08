@@ -9,6 +9,8 @@ import datetime
 import gzip
 import Feed
 
+#import dask.dataframe as dd
+
 '''HistoryManager
 
 In the interest of time vs space, eventually this will do something more complex for dealing with
@@ -38,27 +40,41 @@ class OHLCV:
 
 class History(utils.NextableClass):
 
-    def __init__(self, path, chunksize=1000):
+    def __init__(self, path):
         super().__init__()
-        self._chunksize = chunksize
         self.feeds = dict()
-        for col in NORGATE_USE_COLUMNS:
-            df = pd.read_csv(path,
-                             #names=NORGATE_COLUMNS,
-                             sep=',',
-                             parse_dates=[0],
-                             infer_datetime_format=True,
-                             #date_parser=ciso8601.parse_datetime,
-                             usecols=[col],
-                             chunksize=chunksize)
-            feed = Feed.Feed(df)
-            self.feeds[col] = feed
+        df = pd.read_csv(path,
+                         #names=NORGATE_COLUMNS,
+                         sep=',',
+                         parse_dates=[0],
+                         infer_datetime_format=True,
+                         #date_parser=lambda x: ciso8601.parse_datetime(x),
+                         usecols=NORGATE_USE_COLUMNS,)
+        for column in df.columns:
+            feed = Feed.Feed(df[column])
+            self.feeds[column] = feed
             self.add_nextable(feed)
 
     def __getattr__(self, item):
         if item == '_done':
             return self._done
+        elif item == 'feeds':
+            return self.feeds
         return self.feeds[item]
+
+    def __getitem__(self, item):
+        feeds = self.feeds
+
+        dt = feeds['datetime'][item]
+        o = feeds['open'][item]
+        h = feeds['high'][item]
+        l = feeds['low'][item]
+        c = feeds['close'][item]
+        v = feeds['volume'][item]
+        return OHLCV(dt,o,h,l,c,v)
+
+
+
 
 
 class HistoryManager(utils.NextableClass):
@@ -82,11 +98,11 @@ class HistoryManager(utils.NextableClass):
         return h
 
     def start(self):
-        earliest = ciso8601.parse_datetime('9999-01-01')
+        earliest = None #ciso8601.parse_datetime('9999-01-01')
         #we need to figure out all of the trading securities for all of the days we run our simulation
         for security, history in self.histories.items():
-            begin_ts = history[0].datetime
-            if begin_ts < earliest:
+            begin_ts = history.datetime[0]
+            if earliest is None or begin_ts < earliest:
                 earliest = begin_ts
         self.today = earliest
         self.trading_securities = self._determine_trading_securities()
@@ -94,7 +110,8 @@ class HistoryManager(utils.NextableClass):
     def _determine_trading_securities(self):
         ret = []
         for security, history in self.histories.items():
-            if history[0].datetime == self.today:
+            dt = history.datetime[0]
+            if  dt == self.today:
                 ret.append(security)
         return ret
 

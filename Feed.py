@@ -1,23 +1,25 @@
 
 import utils
-from numba import jitclass
-from numba import float32, float64, int32,boolean
+#from numba import jitclass
+#from numba import float32, float64, int32,boolean
 
-spec = [
-    ('_data',float32[:]),
-    ('_datalen',int32),
-    ('_current_position',int32),
-    ('_done',boolean),
-]
+#spec = [
+#    ('_data',float32[:]),
+#    ('_datalen',int32),
+#    ('_current_position',int32),
+#    ('_done',boolean),
+#]
 
 
 class Feed(utils.NextableClass):
-    def __init__(self, chunks):
+    def __init__(self, data):
         super().__init__()
-
-        self._chunks = chunks
-        self._data = next(chunks)
-        self._chunksize = self._chunks.chunksize
+        try:
+            data = data.tolist()
+        except:
+            pass
+        self._data = data
+        self._datalen = len(data) - 1
         self._current_position = 0
         self._done = False
 
@@ -36,5 +38,7 @@ class Feed(utils.NextableClass):
             index = 0
         if index > self._datalen:
             index = self._datalen - 1
-        return self._data[index]
+        ret = self._data[index]#[index]
+
+        return ret
 
