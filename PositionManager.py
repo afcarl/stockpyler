@@ -5,7 +5,7 @@ import utils
 
 
 class PositionManager(utils.NextableClass):
-    def __init__(self, stockpyler, initial_cash=100.0, stock_margin = .5):
+    def __init__(self, stockpyler, initial_cash=1000.0, stock_margin = .5):
         super().__init__()
         self.sp = stockpyler
         self.current_cash = initial_cash

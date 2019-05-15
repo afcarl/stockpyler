@@ -18,9 +18,7 @@ multi security portfolio backtesting. until then, try not to add too many
 
 '''
 
-COLUMNS = ['datetime', 'open', 'high', 'low', 'close', 'volume']
-NORGATE_COLUMNS = ['datetime','open','high','low','close','volume','turnover','aux1','aux2','aux3']
-NORGATE_USE_COLUMNS = ['datetime','open','high','low','close','volume',]
+BASE_DIR = 'C:/Users/mcdof/Documents/NDExport/AU Equities'
 
 
 class OHLCV:
@@ -50,6 +48,7 @@ class History(utils.NextableClass):
                          infer_datetime_format=True,
                          #date_parser=lambda x: ciso8601.parse_datetime(x),
                          usecols=NORGATE_USE_COLUMNS,)
+
         for column in df.columns:
             feed = Feed.Feed(df[column])
             self.feeds[column] = feed
@@ -71,10 +70,7 @@ class History(utils.NextableClass):
         l = feeds['low'][item]
         c = feeds['close'][item]
         v = feeds['volume'][item]
-        return OHLCV(dt,o,h,l,c,v)
-
-
-
+        return OHLCV(dt, o, h, l, c, v)
 
 
 class HistoryManager(utils.NextableClass):
@@ -85,34 +81,24 @@ class HistoryManager(utils.NextableClass):
         self.histories = dict()
         self.today = None
         self.trading_securities = []
+        self.feeds = dict()
+        self.txtreaders = dict()
+        self._pos = 0
+        for thing in ['Open','High','Low','Close']:
+            csv = os.path.join(BASE_DIR, 'ALL_DATA_' + thing.upper() + '.txt.gz')
+            txt_reader =  pd.read_csv(csv,
+                        sep=',',
+                        parse_dates=[0],
+                        infer_datetime_format=True,
+                        chunksize=10)
+            self.txtreaders[thing] = txt_reader
+            self.feeds[thing] = next(txt_reader)
 
-    def add_history(self, security, path_to_file, names=None):
-        if names is None:
-            names = NORGATE_COLUMNS
-        if not os.path.isfile(path_to_file):
-            raise ValueError("cant open file", path_to_file)
-
-        h = History(path_to_file)
-        self.histories[security] = h
-        self.add_nextable(h)
-        return h
-
-    def start(self):
-        earliest = None #ciso8601.parse_datetime('9999-01-01')
-        #we need to figure out all of the trading securities for all of the days we run our simulation
-        for security, history in self.histories.items():
-            begin_ts = history.datetime[0]
-            if earliest is None or begin_ts < earliest:
-                earliest = begin_ts
-        self.today = earliest
-        self.trading_securities = self._determine_trading_securities()
 
     def _determine_trading_securities(self):
         ret = []
-        for security, history in self.histories.items():
-            dt = history.datetime[0]
-            if  dt == self.today:
-                ret.append(security)
+        for v in self.feeds['Close'].iloc[self._pos]:
+            if v
         return ret
 
     def get_trading_securities(self):
@@ -127,8 +113,9 @@ class HistoryManager(utils.NextableClass):
     def next(self):
         for s in self.get_trading_securities():
             self.histories[s].next()
-        if self.all_children_are_done():
-            self._done = True
+        if len(self.get_trading_securities()) > 0:
+            if self.all_children_are_done():
+                self._done = True
         self.today += datetime.timedelta(days=1)
         self.trading_securities = self._determine_trading_securities()
 

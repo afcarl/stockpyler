@@ -28,8 +28,11 @@ class Feed(utils.NextableClass):
         if self._current_position > self._datalen:
             self._done = True
 
+    def __len__(self):
+        return len(self._data) - 1
+
     def __getitem__(self, arg):
-        assert arg <= 0, "Can't look into the future!"
+        #assert arg <= 0, "Can't look into the future!"
         #TODO: what to do about reading before start / after end?
         #have considered negative indicies to return the 0th element, and > len(this) indicies to return the last element
         #TODO: lazy load in/out so we hopefully dont take infinity ram

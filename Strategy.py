@@ -13,6 +13,7 @@ class Strategy(utils.NextableClass):
         self._securities = securities
         self._histories = histories
         self._indicators = defaultdict(lambda: [])
+        self._pending_orders = []
         self.add_nextable(*histories.values())
 
     def add_indicator(self, security, ind):
@@ -51,11 +52,13 @@ class Strategy(utils.NextableClass):
     def buy(self, security, quantity):
         o = OrderTypes.MarketOrder(security, common.OrderAction.BUY, quantity)
         o = self._sp.pm.simple_order(o)
+        self._pending_orders.append(o)
         return o
 
     def sell(self, security, quantity):
         o = OrderTypes.MarketOrder(security, common.OrderAction.SELL, quantity)
         o = self._sp.pm.simple_order(o)
+        self._pending_orders.append(o)
         return o
 
     def close(self, security, quantity):
@@ -65,5 +68,6 @@ class Strategy(utils.NextableClass):
 
         o = OrderTypes.MarketOrder(security, act, quantity)
         o = self._sp.pm.simple_order(o)
+        self._pending_orders.append(o)
         return o
 
