@@ -1,8 +1,6 @@
 import os
 import ciso8601
 import utils
-import gzip
-
 
 '''HistoryManager
 
@@ -38,17 +36,18 @@ def parse_trading_securities_line(l):
     securities = securities.split(',')
     return ts, securities
 
-#@numba.jit()
+
 def parse_data_line(l):
-    ret = l.strip().split(',')
-    return ret[0],ret[1:]
+    ret = l.split(',')
+    ts = ciso8601.parse_datetime(ret.pop(0))
+    return ts,ret
 
 def read_more_lines(f, num_lines):
     ret = []
     try:
         for x in range(0,num_lines):
             l = next(f)
-            ret.append(parse_data_line(l))
+            ret.append(parse_data_line(l.strip()))
         return ret
     except StopIteration:
         return ret
@@ -66,10 +65,10 @@ class HistoryManager(utils.NextableClass):
         self.txtreader_columns = dict()
         self._pos = 0
         self._num_processed = 0
-        self._chunksize = 100
+        self._chunksize = 10
         for thing in ['Open','High','Low','Close','Volume']:
-            csv = os.path.join(BASE_DIR, 'ALL_DATA_' + thing.upper() + '.txt.gz')
-            txt_reader = gzip.open(csv, 'rt')
+            csv = os.path.join(BASE_DIR, 'ALL_DATA_' + thing.upper() + '.txt')
+            txt_reader = open(csv, 'rt')
             headers = next(txt_reader).strip()
             self.txtreader_columns[thing] = headers.split(',')
             print(self.txtreader_columns)
@@ -78,7 +77,7 @@ class HistoryManager(utils.NextableClass):
             self.txtreaders[thing] = txt_reader
             self.feeds[thing] = read_more_lines(self.txtreaders[thing],self._chunksize)
         #todo: assert that the headers for each open/high/low etc are the same so we only actually need to store one
-        self.trading_securities_file = gzip.open(os.path.join(BASE_DIR,'TRADING_SECURITIES.txt.gz'),'rt')
+        self.trading_securities_file = open(os.path.join(BASE_DIR,'TRADING_SECURITIES.txt'),'rt')
         self.today, self.trading_securities = self._determine_trading_securities()
 
     def _determine_trading_securities(self):
