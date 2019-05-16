@@ -2,10 +2,6 @@ import DataManager
 import HistoryManager
 import PositionManager
 import TimeManager
-import tracemalloc
-import utils
-import os
-import linecache
 
 class Stockpyler:
 

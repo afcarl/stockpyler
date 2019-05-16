@@ -1,11 +1,7 @@
-import pandas as pd
 import os
-import sys
 import ciso8601
 import utils
-import datetime
 import gzip
-import Feed
 
 
 '''HistoryManager
@@ -15,7 +11,7 @@ multi security portfolio backtesting. until then, try not to add too many
 
 '''
 
-BASE_DIR = 'C:/Users/mcdof/Documents/NDExport/World Indices'
+BASE_DIR = 'C:/Users/mcdof/Documents/NDExport/AU Equities'
 
 
 class OHLCV:
@@ -42,9 +38,10 @@ def parse_trading_securities_line(l):
     securities = securities.split(',')
     return ts, securities
 
+#@numba.jit()
 def parse_data_line(l):
-    l = l.strip().split(',')
-    return l[0],l[1:]
+    ret = l.strip().split(',')
+    return ret[0],ret[1:]
 
 def read_more_lines(f, num_lines):
     ret = []
@@ -82,6 +79,7 @@ class HistoryManager(utils.NextableClass):
             self.feeds[thing] = read_more_lines(self.txtreaders[thing],self._chunksize)
         #todo: assert that the headers for each open/high/low etc are the same so we only actually need to store one
         self.trading_securities_file = gzip.open(os.path.join(BASE_DIR,'TRADING_SECURITIES.txt.gz'),'rt')
+        self.today, self.trading_securities = self._determine_trading_securities()
 
     def _determine_trading_securities(self):
         l = next(self.trading_securities_file)
@@ -114,7 +112,7 @@ class HistoryManager(utils.NextableClass):
             self._done = True
 
     def ohlcv(self, security_index, index):
-        #index += self._pos
+        index += self._pos
         index = 0
         print("accessing",index)
         dt = self.feeds['Open'][0][index]

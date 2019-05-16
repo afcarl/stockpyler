@@ -1,6 +1,5 @@
 import os
 import pandas as pd
-from collections import defaultdict
 
 NORGATE_COLUMNS = ['datetime','open','high','low','close','volume','turnover','aux1','aux2','aux3']
 

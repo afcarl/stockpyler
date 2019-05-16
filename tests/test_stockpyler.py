@@ -1,15 +1,7 @@
-import os
-import random
 
 import Stockpyler
-import Security
 import Strategy
 import utils
-#import memory_profiler
-import talib
-import pandas as pd
-import Feed
-
 BASE_PATH = 'C:/Users/mcdof/Documents/norgate_scraped2/us_equities/'
 
 class MyStrategy(Strategy.Strategy):
@@ -24,12 +16,7 @@ class MyStrategy(Strategy.Strategy):
         print("final account value", self.get_value())
 
     def next(self):
-        print(self.today())
-        trading_securities = list(self.get_trading_securities())
-        #print(trading_securities)
-        if len(trading_securities) > 0:
-            s = trading_securities[0]
-            #print(self._sp.hm.ohlcv(0, 0))
+        #print(self.today())
 
         super().next()
 
