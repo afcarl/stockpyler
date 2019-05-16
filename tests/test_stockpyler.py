@@ -26,21 +26,16 @@ class MyStrategy(Strategy.Strategy):
     def next(self):
         print(self.today())
         trading_securities = list(self.get_trading_securities())
-        print(trading_securities)
+        #print(trading_securities)
         if len(trading_securities) > 0:
             s = trading_securities[0]
-            print(self._sp.hm.ohlcv(s,0))
+            #print(self._sp.hm.ohlcv(0, 0))
 
         super().next()
 
 #@memory_profiler.profile()
 @utils.timeit
 def test_stockpyler():
-
-    all_csvs = os.listdir('C:/Users/mcdof/Documents/norgate_scraped2/us_equities/')
-    random.shuffle(all_csvs)
-    print(all_csvs)
-
     sp = Stockpyler.Stockpyler(False)
 
     sp.add_strategy(MyStrategy)

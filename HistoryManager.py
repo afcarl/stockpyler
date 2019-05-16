@@ -15,7 +15,7 @@ multi security portfolio backtesting. until then, try not to add too many
 
 '''
 
-BASE_DIR = 'C:/Users/mcdof/Documents/NDExport/AU Equities'
+BASE_DIR = 'C:/Users/mcdof/Documents/NDExport/World Indices'
 
 
 class OHLCV:
@@ -42,6 +42,20 @@ def parse_trading_securities_line(l):
     securities = securities.split(',')
     return ts, securities
 
+def parse_data_line(l):
+    l = l.strip().split(',')
+    return l[0],l[1:]
+
+def read_more_lines(f, num_lines):
+    ret = []
+    try:
+        for x in range(0,num_lines):
+            l = next(f)
+            ret.append(parse_data_line(l))
+        return ret
+    except StopIteration:
+        return ret
+
 class HistoryManager(utils.NextableClass):
 
     def __init__(self, stockpyler):
@@ -52,18 +66,21 @@ class HistoryManager(utils.NextableClass):
         self.trading_securities = []
         self.feeds = dict()
         self.txtreaders = dict()
+        self.txtreader_columns = dict()
         self._pos = 0
-        self._chunksize = 10
+        self._num_processed = 0
+        self._chunksize = 100
         for thing in ['Open','High','Low','Close','Volume']:
             csv = os.path.join(BASE_DIR, 'ALL_DATA_' + thing.upper() + '.txt.gz')
-            txt_reader = pd.read_csv(csv,
-                        sep=',',
-                        parse_dates=[0],
-                        infer_datetime_format=True,
-                        chunksize=self._chunksize)
+            txt_reader = gzip.open(csv, 'rt')
+            headers = next(txt_reader).strip()
+            self.txtreader_columns[thing] = headers.split(',')
+            print(self.txtreader_columns)
+            #for line in txt_reader:
+            #    print(line)
             self.txtreaders[thing] = txt_reader
-            self.feeds[thing] = next(txt_reader)
-
+            self.feeds[thing] = read_more_lines(self.txtreaders[thing],self._chunksize)
+        #todo: assert that the headers for each open/high/low etc are the same so we only actually need to store one
         self.trading_securities_file = gzip.open(os.path.join(BASE_DIR,'TRADING_SECURITIES.txt.gz'),'rt')
 
     def _determine_trading_securities(self):
@@ -83,19 +100,29 @@ class HistoryManager(utils.NextableClass):
 
     def next(self):
         self._pos += 1
+        self._num_processed += 1
+        if self._pos >= self._chunksize:
+            self._pos -= self._chunksize
+            for thing in ['Open', 'High', 'Low', 'Close', 'Volume']:
+                n = read_more_lines(self.txtreaders[thing],self._chunksize)
+
+                self.feeds[thing].extend(n)
+                self.feeds[thing] = self.feeds[thing][self._chunksize:]
         try:
             self.today, self.trading_securities = self._determine_trading_securities()
         except StopIteration:
             self._done = True
 
-    def ohlcv(self, security, index):
-        index += self._pos
-        dt = self.feeds['Open']['Date'].iloc[index]
-        o = self.feeds['Open'][security].iloc[index]
-        h = self.feeds['High'][security].iloc[index]
-        l = self.feeds['Low'][security].iloc[index]
-        c = self.feeds['Close'][security].iloc[index]
-        v = self.feeds['Volume'][security].iloc[index]
+    def ohlcv(self, security_index, index):
+        #index += self._pos
+        index = 0
+        print("accessing",index)
+        dt = self.feeds['Open'][0][index]
+        o = self.feeds['Open'][security_index][index]
+        h = self.feeds['High'][security_index][index]
+        l = self.feeds['Low'][security_index][index]
+        c = self.feeds['Close'][security_index][index]
+        v = self.feeds['Volume'][security_index][index]
         return OHLCV(dt, o, h, l, c, v)
 
 
