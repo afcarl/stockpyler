@@ -24,9 +24,10 @@ class Strategy(utils.NextableClass):
         pass
 
     def next(self):
-        for s in self.get_trading_securities():
-            for ind in self._indicators[s]:
-                ind.next()
+        pass
+        #for ind in self._indicators[s]:
+        #    for s in self.get_trading_securities():
+        #        ind.next()
 
     def get_position(self, security):
         return self._sp.pm.position_size(security)

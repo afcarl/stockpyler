@@ -13,7 +13,7 @@ first = True
 
 subdirs =  sorted(os.listdir(BASE_DIR))
 
-
+'''
 for subdir in subdirs:
     TRADING_SECURITIES = dict()
     all_csvs = sorted(os.listdir(os.path.join(BASE_DIR, subdir)))
@@ -44,9 +44,15 @@ for subdir in subdirs:
 
     with gzip.open(pickle_path, 'wb+') as f:
         pickle.dump(list(sorted(TRADING_SECURITIES.items())), f)
+'''
 
-with gzip.open('C:/Users/mcdof/Documents/NDExport/US Equities/TRADING_SECURITIES.pickle.gz', 'rb') as f:
-    trading_securities = pickle.load(f)
+for subdir in subdirs:
+    in_p = os.path.join(BASE_DIR,subdir,'TRADING_SECURITIES.pickle.gz')
+    out_p = os.path.join(BASE_DIR,subdir,'TRADING_SECURITIES.txt.gz')
 
-    for thing in trading_securities:
-        print(thing)
+    with gzip.open(in_p, 'rb') as in_f, gzip.open(out_p, 'wb') as out_f:
+        trading_securities = pickle.load(in_f)
+        print("writing",out_p)
+        for thing in trading_securities:
+            l = "{} {}\n".format(thing[0].strftime('%Y-%m-%d'), ','.join(thing[1]))
+            out_f.write(l.encode())

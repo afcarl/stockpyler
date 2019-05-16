@@ -1,15 +1,12 @@
 import pandas as pd
 import os
 import sys
-import csv
 import ciso8601
 import utils
 import datetime
-
 import gzip
 import Feed
 
-#import dask.dataframe as dd
 
 '''HistoryManager
 
@@ -35,43 +32,15 @@ class OHLCV:
     def __getitem__(self, item):
         return self.__getattribute__(item)
 
+    def __str__(self):
+        return '{}: o:{} h: {} l: {} c: {} v:{}'.format(self.datetime,self.open,self.high,self.low,self.close,self.volume)
 
-class History(utils.NextableClass):
-
-    def __init__(self, path):
-        super().__init__()
-        self.feeds = dict()
-        df = pd.read_csv(path,
-                         #names=NORGATE_COLUMNS,
-                         sep=',',
-                         parse_dates=[0],
-                         infer_datetime_format=True,
-                         #date_parser=lambda x: ciso8601.parse_datetime(x),
-                         usecols=NORGATE_USE_COLUMNS,)
-
-        for column in df.columns:
-            feed = Feed.Feed(df[column])
-            self.feeds[column] = feed
-            self.add_nextable(feed)
-
-    def __getattr__(self, item):
-        if item == '_done':
-            return self._done
-        elif item == 'feeds':
-            return self.feeds
-        return self.feeds[item]
-
-    def __getitem__(self, item):
-        feeds = self.feeds
-
-        dt = feeds['datetime'][item]
-        o = feeds['open'][item]
-        h = feeds['high'][item]
-        l = feeds['low'][item]
-        c = feeds['close'][item]
-        v = feeds['volume'][item]
-        return OHLCV(dt, o, h, l, c, v)
-
+def parse_trading_securities_line(l):
+    l = l.strip()
+    ts, securities = l.split(' ')
+    ts = ciso8601.parse_datetime(ts)
+    securities = securities.split(',')
+    return ts, securities
 
 class HistoryManager(utils.NextableClass):
 
@@ -84,22 +53,24 @@ class HistoryManager(utils.NextableClass):
         self.feeds = dict()
         self.txtreaders = dict()
         self._pos = 0
-        for thing in ['Open','High','Low','Close']:
+        self._chunksize = 10
+        for thing in ['Open','High','Low','Close','Volume']:
             csv = os.path.join(BASE_DIR, 'ALL_DATA_' + thing.upper() + '.txt.gz')
-            txt_reader =  pd.read_csv(csv,
+            txt_reader = pd.read_csv(csv,
                         sep=',',
                         parse_dates=[0],
                         infer_datetime_format=True,
-                        chunksize=10)
+                        chunksize=self._chunksize)
             self.txtreaders[thing] = txt_reader
             self.feeds[thing] = next(txt_reader)
 
+        self.trading_securities_file = gzip.open(os.path.join(BASE_DIR,'TRADING_SECURITIES.txt.gz'),'rt')
 
     def _determine_trading_securities(self):
-        ret = []
-        for v in self.feeds['Close'].iloc[self._pos]:
-            if v
-        return ret
+        l = next(self.trading_securities_file)
+        l = parse_trading_securities_line(l)
+        #print(l)
+        return l
 
     def get_trading_securities(self):
         return self.trading_securities
@@ -111,13 +82,21 @@ class HistoryManager(utils.NextableClass):
         return len(self.get_trading_securities())
 
     def next(self):
-        for s in self.get_trading_securities():
-            self.histories[s].next()
-        if len(self.get_trading_securities()) > 0:
-            if self.all_children_are_done():
-                self._done = True
-        self.today += datetime.timedelta(days=1)
-        self.trading_securities = self._determine_trading_securities()
+        self._pos += 1
+        try:
+            self.today, self.trading_securities = self._determine_trading_securities()
+        except StopIteration:
+            self._done = True
+
+    def ohlcv(self, security, index):
+        index += self._pos
+        dt = self.feeds['Open']['Date'].iloc[index]
+        o = self.feeds['Open'][security].iloc[index]
+        h = self.feeds['High'][security].iloc[index]
+        l = self.feeds['Low'][security].iloc[index]
+        c = self.feeds['Close'][security].iloc[index]
+        v = self.feeds['Volume'][security].iloc[index]
+        return OHLCV(dt, o, h, l, c, v)
 
 
 
