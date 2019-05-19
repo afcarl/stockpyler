@@ -40,14 +40,14 @@ def chunks(l, n):
 
 def filter_files(f):
     valid_names = [
-        'ALL_DATA_OPEN.txt',
-        'ALL_DATA_HIGH.txt',
-        'ALL_DATA_LOW.txt',
-        'ALL_DATA_CLOSE.txt',
-        'ALL_DATA_VOLUME.txt',
-        'ALL_DATA_TURNOVER.txt',
-        'ALL_DATA_UNADJUSTED CLOSE.txt',
-        'ALL_DATA_CLOSE_MA200.txt',
+        'ALL_DATA_OPEN.feather',
+        'ALL_DATA_HIGH.feather',
+        'ALL_DATA_LOW.feather',
+        'ALL_DATA_CLOSE.feather',
+        'ALL_DATA_VOLUME.feather',
+        'ALL_DATA_TURNOVER.feather',
+        'ALL_DATA_UNADJUSTED CLOSE.feather',
+        'ALL_DATA_CLOSE_MA200.feather',
     ]
     return any([f.endswith(n) for n in valid_names])
 
@@ -56,13 +56,19 @@ for subdir in subdirs:
     all_data_files = filter(filter_files, os.listdir(p))
     for d_file in all_data_files:
         fullpath = os.path.join(p,d_file)
-        for i, df in enumerate(pd.read_csv(fullpath,
+        df = pd.read_csv(fullpath,
                          sep=',',
                          parse_dates=[0],
                          infer_datetime_format=True,
-                         index_col='Date',
-                         chunksize=100)):
-            out_csv_name = fullpath.replace('.txt', "_" + str(i) + '.txt')
+                         index_col='Date')
+
+
+        list_df = [THE_DATAFRAME[i:i + 100] for i in range(0, THE_DATAFRAME.shape[0], 100)]
+        p = multiprocessing.Pool(8)
+        p.starmap(write_chunk, zip(list_df, itertools.repeat(out_csv), range(len(list_df))))
+
+        for i, df in enumerate(:
+            out_csv_name = fullpath.replace('.feather', "_" + str(i) + '.feather')
             if os.path.exists(out_csv_name):
                 continue
             df.drop(columns=df.columns[df.isna().all()].tolist(), inplace=True)

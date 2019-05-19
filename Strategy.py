@@ -3,18 +3,17 @@ import OrderTypes
 import common
 import Stockpyler
 import utils
-from collections import defaultdict
 
 class Strategy(utils.NextableClass):
 
     def __init__(self, stockpyler: Stockpyler.Stockpyler, *args, **kwargs):
         super().__init__()
         self._sp = stockpyler
-        self._indicators = defaultdict(lambda: [])
         self._pending_orders = []
 
-    def add_indicator(self, security, ind):
-        self._indicators[security].append(ind)
+    def ohlvc(self, security, index):
+        return self._sp.hm.ohlcv(security,index)
+
 
     def stop(self):
         #TODO: liquidate positions

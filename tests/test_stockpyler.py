@@ -4,6 +4,7 @@ import Strategy
 import utils
 BASE_PATH = 'C:/Users/mcdof/Documents/norgate_scraped2/us_equities/'
 
+
 class MyStrategy(Strategy.Strategy):
 
     def __init__(self, *args, **kwargs):
@@ -17,10 +18,17 @@ class MyStrategy(Strategy.Strategy):
 
     def next(self):
         print(self.today())
-
+        securities = list(self.get_trading_securities())
+        print(len(securities))
+        #securities = sorted(securities, key=lambda x: self.sort_by_float(x,0))
+        #print(securities)
         #print(self)
 
         super().next()
+
+    def sort_by_float(self, security, index):
+        ohlcv = self.ohlvc(security,index)
+        return float(ohlcv.volume)*float(ohlcv.close)
 
 #@memory_profiler.profile()
 @utils.timeit

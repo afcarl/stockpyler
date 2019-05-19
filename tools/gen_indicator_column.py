@@ -42,7 +42,4 @@ for subdir in subdirs:
                          index_col='Date')
         except:
             continue
-        if 'Close_ma200' not in df.columns:
-            new_df = pd.DataFrame({'Close_ma200': df['Close'].rolling(200, min_periods=1).mean()})
-            df = df.join(new_df)
         df.to_csv(fullpath, float_format='%g')

@@ -1,6 +1,7 @@
 import os
 import pandas as pd
-
+import multiprocessing
+import itertools
 NORGATE_COLUMNS = ['datetime','open','high','low','close','volume','turnover','aux1','aux2','aux3']
 
 
@@ -19,19 +20,25 @@ first = True
 subdirs =  sorted(os.listdir(BASE_DIR))
 
 SUBDIR_TO_COLS = {
-    'AU Equities':['Close_ma200'],#['Open','High','Low','Close','Volume','Turnover','Unadjusted Close'],
-    'AU Indices':['Close_ma200'],#['Open','High','Low','Close','Volume'],
+    'AU Equities':[],#['Open','High','Low','Close','Volume','Turnover','Unadjusted Close','Close_ma200'],
+    'AU Indices':['Open','High','Low','Close','Volume','Close_ma200'],
     'AU ETOs':[],
     'AU Warrants':[],
-    'Cash Commodities':['Close_ma200'],#['Open','High','Low','Close'],
-    'Continuous Futures':['Close_ma200'],
-    'Economic':['Close_ma200'],#['Open','High','Low','Close'],
-    'Forex Spot':['Close_ma200'],#['Open','High','Low','Close'],
-    'US Equities':['Close_ma200'],#['High','Low','Close','Volume','Turnover','Unadjusted Close'],
-    'US Indices':['Close_ma200'],#['Open','High','Low','Close','Volume'],
-    'World Indices':['Close_ma200'],#['Open','High','Low','Close','Volume'],
+    'Cash Commodities':['Open','High','Low','Close','Close_ma200'],
+    'Continuous Futures':['Close_ma200','Close_ma200'],
+    'Economic': ['Open','High','Low','Close','Close_ma200'],
+    'Forex Spot':['Open','High','Low','Close','Close_ma200'],
+    'US Equities':['High','Low','Close','Volume','Turnover','Unadjusted Close','Close_ma200'],
+    'US Indices':['Open','High','Low','Close','Volume','Close_ma200'],
+    'World Indices':['Open','High','Low','Close','Volume','Close_ma200'],
 
 }
+
+def write_chunk(df, path, index):
+    path = path.replace('.txt', "_" + str(index) + '.feather')
+    df.to_feather(path)
+
+
 
 def chunks(l, n):
     """Yield successive n-sized chunks from l."""
@@ -62,19 +69,18 @@ for subdir in subdirs:
                                      usecols=['Date', col])
                 except:
                     continue
-                if len(df) < 5:
-                    continue
                 print(len(df))
                 df.rename(lambda x: csv_name if x != 'Date' else x, inplace=True, axis='columns')
                 dfs.append(df)
             THE_DATAFRAME = THE_DATAFRAME.join(dfs, how='outer')
         THE_DATAFRAME.sort_values('Date', inplace=True)
-        out_csv = os.path.join(BASE_DIR, subdir, 'ALL_DATA_' + col.upper() + '.txt')
+        THE_DATAFRAME.reset_index(inplace=True)
+        out_csv = os.path.join(BASE_DIR, subdir, 'ALL_DATA_' + col.upper() + '.feather')
         print("writing", out_csv)
+
         list_df = [THE_DATAFRAME[i:i + 100] for i in range(0, THE_DATAFRAME.shape[0], 100)]
-        list_df[0].to_csv(out_csv, float_format='%g', chunksize=100)
-        for l in list_df[1:]:
-            l.to_csv(out_csv, float_format='%g', chunksize=100, mode='a',header=False)
+        p = multiprocessing.Pool(8)
+        p.starmap(write_chunk, zip(list_df, itertools.repeat(out_csv), range(len(list_df))))
 
 
 '''

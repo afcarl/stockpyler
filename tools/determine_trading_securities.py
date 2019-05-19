@@ -13,7 +13,7 @@ first = True
 
 subdirs =  sorted(os.listdir(BASE_DIR))
 
-'''
+
 for subdir in subdirs:
     TRADING_SECURITIES = dict()
     all_csvs = sorted(os.listdir(os.path.join(BASE_DIR, subdir)))
@@ -44,7 +44,7 @@ for subdir in subdirs:
 
     with gzip.open(pickle_path, 'wb+') as f:
         pickle.dump(list(sorted(TRADING_SECURITIES.items())), f)
-'''
+
 
 for subdir in subdirs:
     in_p = os.path.join(BASE_DIR,subdir,'TRADING_SECURITIES.pickle.gz')
