@@ -7,14 +7,11 @@ from collections import defaultdict
 
 class Strategy(utils.NextableClass):
 
-    def __init__(self, stockpyler: Stockpyler.Stockpyler, securities, histories, *args, **kwargs):
+    def __init__(self, stockpyler: Stockpyler.Stockpyler, *args, **kwargs):
         super().__init__()
         self._sp = stockpyler
-        self._securities = securities
-        self._histories = histories
         self._indicators = defaultdict(lambda: [])
         self._pending_orders = []
-        self.add_nextable(*histories.values())
 
     def add_indicator(self, security, ind):
         self._indicators[security].append(ind)
@@ -45,9 +42,8 @@ class Strategy(utils.NextableClass):
         return self._sp.hm.today
 
     def is_trading(self, security):
-        today = self.today()
-        history = self._histories[security]
-        return today == history.datetime[0]
+        #TODO: fix
+        return False
 
     #TODO: move actual impls to Stockpyler class?
     def buy(self, security, quantity):

@@ -27,10 +27,8 @@ class Stockpyler:
         self.strategies.append((strategy, args, kwargs))
 
     def init_strategies(self):
-        securities = self.hm.histories.keys()
-        histories = self.hm.histories
         for s, args, kwargs in self.strategies:
-            strat_obj = s(self, securities, histories, *args, **kwargs)
+            strat_obj = s(self, *args, **kwargs)
             self.running_strategies.append(strat_obj)
 
     def init(self):

@@ -4,7 +4,10 @@ import pandas as pd
 NORGATE_COLUMNS = ['datetime','open','high','low','close','volume','turnover','aux1','aux2','aux3']
 
 
-BASE_DIR = 'C:/Users/mcdof/Documents/NDExport/'
+if os.path.isdir('/mnt/c'):
+    BASE_DIR = '/mnt/c/Users/mcdof/Documents/NDExport/'
+else:
+    BASE_DIR = 'C:/Users/mcdof/Documents/NDExport/'
 
 THE_DATAFRAME = pd.DataFrame({'Date': []})
 THE_DATAFRAME.set_index('Date',inplace=True)
@@ -16,17 +19,17 @@ first = True
 subdirs =  sorted(os.listdir(BASE_DIR))
 
 SUBDIR_TO_COLS = {
-    'AU Equities':[],#['Open','High','Low','Close','Volume','Turnover','Unadjusted Close'],
-    'AU Indices':[],#['Open','High','Low','Close','Volume'],
+    'AU Equities':['Close_ma200'],#['Open','High','Low','Close','Volume','Turnover','Unadjusted Close'],
+    'AU Indices':['Close_ma200'],#['Open','High','Low','Close','Volume'],
     'AU ETOs':[],
     'AU Warrants':[],
-    'Cash Commodities':[],#['Open','High','Low','Close'],
-    'Continuous Futures':[],
-    'Economic':[],#['Open','High','Low','Close'],
-    'Forex Spot':[],#['Open','High','Low','Close'],
-    'US Equities':[],#['High','Low','Close','Volume','Turnover','Unadjusted Close'],
-    'US Indices':['Open','High','Low','Close','Volume'],
-    'World Indices':['Open','High','Low','Close','Volume'],
+    'Cash Commodities':['Close_ma200'],#['Open','High','Low','Close'],
+    'Continuous Futures':['Close_ma200'],
+    'Economic':['Close_ma200'],#['Open','High','Low','Close'],
+    'Forex Spot':['Close_ma200'],#['Open','High','Low','Close'],
+    'US Equities':['Close_ma200'],#['High','Low','Close','Volume','Turnover','Unadjusted Close'],
+    'US Indices':['Close_ma200'],#['Open','High','Low','Close','Volume'],
+    'World Indices':['Close_ma200'],#['Open','High','Low','Close','Volume'],
 
 }
 
@@ -66,9 +69,13 @@ for subdir in subdirs:
                 dfs.append(df)
             THE_DATAFRAME = THE_DATAFRAME.join(dfs, how='outer')
         THE_DATAFRAME.sort_values('Date', inplace=True)
-        out_csv = os.path.join(BASE_DIR, subdir, 'ALL_DATA_' + col.upper() + '.txt.gz')
+        out_csv = os.path.join(BASE_DIR, subdir, 'ALL_DATA_' + col.upper() + '.txt')
         print("writing", out_csv)
-        THE_DATAFRAME.to_csv(out_csv, compression='gzip')
+        list_df = [THE_DATAFRAME[i:i + 100] for i in range(0, THE_DATAFRAME.shape[0], 100)]
+        list_df[0].to_csv(out_csv, float_format='%g', chunksize=100)
+        for l in list_df[1:]:
+            l.to_csv(out_csv, float_format='%g', chunksize=100, mode='a',header=False)
+
 
 '''
 for csv in sorted(os.listdir(BASE_DIR)):

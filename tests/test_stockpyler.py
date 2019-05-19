@@ -9,14 +9,16 @@ class MyStrategy(Strategy.Strategy):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.ma200s = dict()
-        self.max_positions = len(self._securities) / 10
+        self.max_positions = 50
         self.cur_positions = 0
 
     def stop(self):
         print("final account value", self.get_value())
 
     def next(self):
-        #print(self.today())
+        print(self.today())
+
+        #print(self)
 
         super().next()
 

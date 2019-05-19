@@ -1,6 +1,9 @@
 import os
 import ciso8601
+import sys
 import utils
+import csv
+import pandas as pd
 
 '''HistoryManager
 
@@ -8,9 +11,13 @@ In the interest of time vs space, eventually this will do something more complex
 multi security portfolio backtesting. until then, try not to add too many
 
 '''
+if os.path.isdir('/mnt/c'):
+    BASE_DIR = '/mnt/c/Users/mcdof/Documents/NDExport/AU Equities'
+else:
+    BASE_DIR = 'C:/Users/mcdof/Documents/NDExport/AU Equities'
 
-BASE_DIR = 'C:/Users/mcdof/Documents/NDExport/AU Equities'
-
+ALL_DATA_FIELDS = ['Open', 'High', 'Low', 'Close', 'Volume', 'Close_ma200']
+#ALL_DATA_FIELDS = [ 'Close', 'Close_ma200']
 
 class OHLCV:
     __slots__ = ['datetime', 'open', 'high', 'low', 'close', 'volume']
@@ -37,60 +44,56 @@ def parse_trading_securities_line(l):
     return ts, securities
 
 
-def parse_data_line(l):
-    ret = l.split(',')
-    ts = ciso8601.parse_datetime(ret.pop(0))
-    return ts,ret
+def extend_dicts(d1, d2):
+    for k,v in d2.items():
+        if k not in d1:
+            d1[k] = v
+        else:
+            d1[k].extend(v)
 
-def read_more_lines(f, num_lines):
-    ret = []
-    try:
-        for x in range(0,num_lines):
-            l = next(f)
-            ret.append(parse_data_line(l.strip()))
-        return ret
-    except StopIteration:
-        return ret
+def slice_dicts(d, num_lines):
+    for k,v in list(d.items()):
+        if len(d[k]) > num_lines:
+            d[k] = v[num_lines:]
+        if len(d[k]) == 0:
+            del d[k]
+
 
 class HistoryManager(utils.NextableClass):
 
     def __init__(self, stockpyler):
         super().__init__()
         self._sp = stockpyler
-        self.histories = dict()
         self.today = None
         self.trading_securities = []
         self.feeds = dict()
-        self.txtreaders = dict()
-        self.txtreader_columns = dict()
         self._pos = 0
         self._num_processed = 0
-        self._chunksize = 10
-        for thing in ['Open','High','Low','Close','Volume']:
-            csv = os.path.join(BASE_DIR, 'ALL_DATA_' + thing.upper() + '.txt')
-            txt_reader = open(csv, 'rt')
-            headers = next(txt_reader).strip()
-            self.txtreader_columns[thing] = headers.split(',')
-            print(self.txtreader_columns)
-            #for line in txt_reader:
-            #    print(line)
-            self.txtreaders[thing] = txt_reader
-            self.feeds[thing] = read_more_lines(self.txtreaders[thing],self._chunksize)
-        #todo: assert that the headers for each open/high/low etc are the same so we only actually need to store one
-        self.trading_securities_file = open(os.path.join(BASE_DIR,'TRADING_SECURITIES.txt'),'rt')
+        self._csv_num = 0
+        for thing in ALL_DATA_FIELDS:
+            self.feeds[thing] = self._load_next_csv(thing)
+        self._chunksize = len(self.feeds['Open']['Date'])
+        self.trading_securities_file = open(os.path.join(BASE_DIR, 'TRADING_SECURITIES.txt'), 'rt')
         self.today, self.trading_securities = self._determine_trading_securities()
 
+    def _load_next_csv(self, column):
+        csv_file = os.path.join(BASE_DIR, 'ALL_DATA_' + column.upper() + '_' + str(self._csv_num) + '.txt')
+        with open(csv_file, 'rt') as f:
+            txt_reader = csv.DictReader(f)
+            ret = {col: [None]*100 for col in txt_reader.fieldnames}
+            for i, line in enumerate(txt_reader):
+                line['Date'] = ciso8601.parse_datetime(line['Date'])
+                for k, v in line.items():
+                    ret[k][i] = v
+            return ret
+
     def _determine_trading_securities(self):
-        l = next(self.trading_securities_file)
-        l = parse_trading_securities_line(l)
-        #print(l)
-        return l
+        line = next(self.trading_securities_file)
+        line = parse_trading_securities_line(line)
+        return line
 
     def get_trading_securities(self):
         return self.trading_securities
-
-    def get_history(self, security):
-        return self.histories[security]
 
     def get_num_trading_securities(self):
         return len(self.get_trading_securities())
@@ -99,27 +102,27 @@ class HistoryManager(utils.NextableClass):
         self._pos += 1
         self._num_processed += 1
         if self._pos >= self._chunksize:
+            self._csv_num += 1
             self._pos -= self._chunksize
-            for thing in ['Open', 'High', 'Low', 'Close', 'Volume']:
-                n = read_more_lines(self.txtreaders[thing],self._chunksize)
-
-                self.feeds[thing].extend(n)
-                self.feeds[thing] = self.feeds[thing][self._chunksize:]
+            for thing in ALL_DATA_FIELDS:
+                n = self._load_next_csv(thing)
+                extend_dicts(self.feeds[thing], n)
+                slice_dicts(self.feeds[thing], self._chunksize)
+                pass
         try:
             self.today, self.trading_securities = self._determine_trading_securities()
         except StopIteration:
             self._done = True
 
-    def ohlcv(self, security_index, index):
+    def ohlcv(self, security, index):
         index += self._pos
-        index = 0
-        print("accessing",index)
-        dt = self.feeds['Open'][0][index]
-        o = self.feeds['Open'][security_index][index]
-        h = self.feeds['High'][security_index][index]
-        l = self.feeds['Low'][security_index][index]
-        c = self.feeds['Close'][security_index][index]
-        v = self.feeds['Volume'][security_index][index]
+        dt = self.feeds['Open']['Date'][index]
+        o = self.feeds['Open'][security][index]
+        h = self.feeds['High'][security][index]
+        l = self.feeds['Low'][security][index]
+        c = self.feeds['Close'][security][index]
+        v = self.feeds['Volume'][security][index]
+
         return OHLCV(dt, o, h, l, c, v)
 
 
