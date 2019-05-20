@@ -12,9 +12,9 @@ multi security portfolio backtesting. until then, try not to add too many
 
 '''
 if os.path.isdir('/mnt/c'):
-    BASE_DIR = '/mnt/c/Users/mcdof/Documents/NDExport/AU Equities'
+    BASE_DIR = '/mnt/c/Users/mcdof/Documents/NDExport/'
 else:
-    BASE_DIR = 'C:/Users/mcdof/Documents/NDExport/AU Equities'
+    BASE_DIR = 'C:/Users/mcdof/Documents/NDExport/'
 
 ALL_DATA_FIELDS = ['Open', 'High', 'Low', 'Close', 'Volume', 'Close_ma200']
 #ALL_DATA_FIELDS = [ 'Close', 'Close_ma200']
@@ -71,21 +71,15 @@ class HistoryManager(utils.NextableClass):
         self._num_processed = 0
         self._csv_num = 0
         for thing in ALL_DATA_FIELDS:
-            self.feeds[thing] = self._load_next_csv(thing)
+            self.feeds[thing] = self._load_next_feather(thing)
         self._chunksize = len(self.feeds['Open']['Date'])
         self.trading_securities_file = open(os.path.join(BASE_DIR, 'TRADING_SECURITIES.txt'), 'rt')
         self.today, self.trading_securities = self._determine_trading_securities()
 
-    def _load_next_csv(self, column):
-        csv_file = os.path.join(BASE_DIR, 'ALL_DATA_' + column.upper() + '_' + str(self._csv_num) + '.txt')
-        with open(csv_file, 'rt') as f:
-            txt_reader = csv.DictReader(f)
-            ret = {col: [None]*100 for col in txt_reader.fieldnames}
-            for i, line in enumerate(txt_reader):
-                line['Date'] = ciso8601.parse_datetime(line['Date'])
-                for k, v in line.items():
-                    ret[k][i] = v
-            return ret
+    def _load_next_feather(self, column):
+        csv_file = os.path.join(BASE_DIR, 'ALL_DATA_' + column.upper() + '_' + str(self._csv_num) + '.feather')
+        f = pd.read_feather(csv_file, columns=['Date','$DJIT'])
+        return f.to_dict(orient='list')
 
     def _determine_trading_securities(self):
         line = next(self.trading_securities_file)
@@ -105,7 +99,7 @@ class HistoryManager(utils.NextableClass):
             self._csv_num += 1
             self._pos -= self._chunksize
             for thing in ALL_DATA_FIELDS:
-                n = self._load_next_csv(thing)
+                n = self._load_next_feather(thing)
                 extend_dicts(self.feeds[thing], n)
                 slice_dicts(self.feeds[thing], self._chunksize)
                 pass

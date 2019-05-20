@@ -32,7 +32,7 @@ class Strategy(utils.NextableClass):
         return self._sp.pm.get_current_value()
 
     def get_trading_securities(self):
-        yield from self._sp.hm.get_trading_securities()
+        return self._sp.hm.get_trading_securities()
 
     def get_num_trading_securities(self):
         return self._sp.hm.get_num_trading_securities()
