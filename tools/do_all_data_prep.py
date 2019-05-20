@@ -4,9 +4,19 @@ import multiprocessing
 import itertools
 
 if os.path.isdir('/mnt/c'):
-    BASE_DIR = '/mnt/c/Users/mcdof/Documents/NDExport/'
+    BASE_DIR = '/mnt/c/Users/mcdof/Documents/NDExport/AU Equities'
 else:
-    BASE_DIR = 'C:/Users/mcdof/Documents/NDExport/'
+    BASE_DIR = 'C:/Users/mcdof/Documents/NDExport/AU Equities'
+
+
+def to_chunked_feathers(df, path):
+    list_df = [df[i:i + 100] for i in range(0, df.shape[0], 100)]
+    for index,df in enumerate(list_df):
+        out_path = path.replace('.feather', "_" + str(index) + '.feather')
+        print("writing",out_path)
+        #df.to_feather(out_path)
+
+
 
 def grouper_it(n, iterable):
     it = iter(iterable)
@@ -20,6 +30,9 @@ def grouper_it(n, iterable):
 
 def del_all_csvs():
     for thing in get_all_from(BASE_DIR, '.csv'):
+        assert thing.startswith(BASE_DIR)
+        assert thing.endswith('.csv')
+        print("deleting",thing)
         os.remove(thing)
 
 def get_all_from(base_path, ending):
@@ -36,7 +49,7 @@ def convert_to_feather(path):
         if os.path.getsize(path) < 16384:
             return
         df = pd.read_csv(path)
-        print(path)
+        print("converting",path)
         df.to_feather(path.replace('.csv','.feather'))
     except:
         pass
@@ -45,19 +58,27 @@ def concat_all(column):
 
     THE_DATAFRAME = pd.DataFrame({'Date': []})
     THE_DATAFRAME.set_index('Date', inplace=True)
-
-    for p in get_all_from(BASE_DIR,".feather"):
+    dfs=[]
+    for p in list(get_all_from(BASE_DIR,".feather")):
         print("reading",p)
         name = os.path.basename(p).replace('.txt', '').replace('.gz', '').replace('.csv', '').replace('.feather','')
-        df = pd.read_feather(p,columns=['Date',column])
-        df.set_index('Date', inplace=True)
+        df = pd.read_feather(p, columns=['Date', column])
+        try:
+            df.set_index('Date', inplace=True)
+        except:
+            continue
         df.rename(lambda x: name if x != 'Date' else x, inplace=True, axis='columns')
-        THE_DATAFRAME = THE_DATAFRAME.merge(df, how='outer',on='Date',)
-    THE_DATAFRAME.sort_values('Date', inplace=True)
+        #print(df)
+        dfs.append(df)
+    THE_DATAFRAME = THE_DATAFRAME.join(dfs, how='outer',sort=True)
+    #THE_DATAFRAME.sort_values('Date', inplace=True)
     THE_DATAFRAME.reset_index(inplace=True)
-    out_name = os.path.join(BASE_DIR, 'ALL_DATA' + column.upper() + '.feather')
+    THE_DATAFRAME.rename(columns={'index': 'Date'},inplace=True)
+    print(THE_DATAFRAME)
+    out_name = os.path.join(BASE_DIR, 'ALL_DATA_' + column.upper() + '.feather')
     print("writing",out_name)
-    THE_DATAFRAME.to_feather(out_name)
+    to_chunked_feathers(THE_DATAFRAME,out_name)
+    #THE_DATAFRAME.to_feather(out_name)
 
 def add_indicator_column(path):
     try:
@@ -80,7 +101,7 @@ def gen_all_indicators():
     p.map(add_indicator_column, get_all_from(BASE_DIR,'.feather'))
 
 def concat_all_columns():
-    p = multiprocessing.Pool(1)
+    p = multiprocessing.Pool(8)
     columns = ['Open','High', 'Low', 'Close', 'Volume', 'Turnover', 'Unadjusted Close', 'Close_ma200']
     p.map(concat_all, columns)
 
@@ -88,7 +109,7 @@ def concat_all_columns():
 
 
 if __name__ == '__main__':
-    convert_all_to_feather()
-    del_all_csvs()
-    gen_all_indicators()
+    #convert_all_to_feather()
+    #del_all_csvs()
+    #gen_all_indicators()
     concat_all_columns()
