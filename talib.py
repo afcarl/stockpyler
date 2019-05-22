@@ -1,10 +1,8 @@
 
 
-#import numpy
-#import pandas as pd
+import numpy
+import pandas as pd
 import math as m
-
-import Feed
 
 #These methods can take a few different things:
 # a feed
