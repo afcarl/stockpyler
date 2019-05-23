@@ -1,7 +1,8 @@
-import pandas as pd
-import os
-import multiprocessing
 import itertools
+import multiprocessing
+import os
+
+import pandas as pd
 
 if os.path.isdir('/mnt/c'):
     BASE_DIR = '/mnt/c/Users/mcdof/Documents/NDExport/'

@@ -2,21 +2,29 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0114f111-4e29-4961-bb89-515b5ab8d54d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/other.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cython_stuff/fib.pyx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/cython_stuff/test_cython.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataManager.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Feed.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Indicators.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Liquidator.py" beforeDir="false" afterPath="$PROJECT_DIR$/cython_stuff/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Stockpyler.py" beforeDir="false" afterPath="$PROJECT_DIR$/Stockpyler.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/TimeManager.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/common.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/HistoryManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/HistoryManager.pyx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OrderTypes.py" beforeDir="false" afterPath="$PROJECT_DIR$/OrderTypes.pyx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PositionManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/PositionManager.pyx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Security.py" beforeDir="false" afterPath="$PROJECT_DIR$/Security.pyx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Stockpyler.py" beforeDir="false" afterPath="$PROJECT_DIR$/Stockpyler.pyx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Strategy.py" beforeDir="false" afterPath="$PROJECT_DIR$/Strategy.pyx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/common.py" beforeDir="false" afterPath="$PROJECT_DIR$/common.pyx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cython_stuff/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cython_stuff/fib.pyx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/cython_stuff/test_cython.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/talib.py" beforeDir="false" afterPath="$PROJECT_DIR$/talib.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_sma.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/test_stockpyler.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_stockpyler.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/concat_all_csvs.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/concat_all_csvs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/convert_norgate_files.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/convert_norgate_files.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/determine_trading_securities.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/determine_trading_securities.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/do_all_data_prep.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/do_all_data_prep.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/gen_indicator_column.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/gen_indicator_column.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/kibot.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/kibot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/split_dataframes_to_months.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/split_dataframes_to_months.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/utils.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils.pyx" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -30,7 +38,45 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/common.py">
+        <entry file="file://$PROJECT_DIR$/utils.pyx">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret column="11" selection-start-column="11" selection-end-column="11" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/common.pyx">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="153">
+              <caret line="9" selection-start-line="9" selection-end-line="9" />
+              <folding>
+                <element signature="e#0#9#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/__init__.py">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/HistoryManager.pyx">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1921">
+              <caret line="113" column="13" lean-forward="true" selection-start-line="113" selection-start-column="13" selection-end-line="113" selection-end-column="13" />
+              <folding>
+                <element signature="e#0#9#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Stockpyler.pyx">
           <provider selected="true" editor-type-id="text-editor">
             <state>
               <caret column="21" selection-start-column="21" selection-end-column="21" />
@@ -38,14 +84,50 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/utils.py">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/test_stockpyler.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="153">
-              <caret line="42" column="27" selection-start-line="42" selection-start-column="27" selection-end-line="42" selection-end-column="27" />
+            <state relative-caret-position="476">
+              <caret line="31" column="37" selection-start-line="31" selection-start-column="37" selection-end-line="31" selection-end-column="37" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Strategy.pyx">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="136">
+              <caret line="14" selection-start-line="14" selection-end-line="14" />
               <folding>
-                <element signature="e#0#11#0" expanded="true" />
+                <element signature="e#1#18#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/main.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state>
+              <caret column="1" selection-start-column="1" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/OrderTypes.pyx">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-119">
+              <caret line="11" selection-start-line="11" selection-end-line="11" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/PositionManager.pyx">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="85">
+              <caret line="6" column="75" selection-start-line="6" selection-start-column="75" selection-end-line="6" selection-end-column="75" />
             </state>
           </provider>
         </entry>
@@ -118,7 +200,6 @@
         <option value="$PROJECT_DIR$/tools/do_all_data_prep.py" />
         <option value="$PROJECT_DIR$/tools/determine_trading_securities.py" />
         <option value="$PROJECT_DIR$/Strategy.py" />
-        <option value="$PROJECT_DIR$/tests/test_stockpyler.py" />
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/test.pyx" />
         <option value="$PROJECT_DIR$/cython_stuff/setup.py" />
@@ -131,6 +212,14 @@
         <option value="$PROJECT_DIR$/Stockpyler.py" />
         <option value="$PROJECT_DIR$/common.py" />
         <option value="$PROJECT_DIR$/utils.py" />
+        <option value="$PROJECT_DIR$/tests/test_stockpyler.py" />
+        <option value="$PROJECT_DIR$/__init__.py" />
+        <option value="$PROJECT_DIR$/common.pyx" />
+        <option value="$PROJECT_DIR$/PositionManager.pyx" />
+        <option value="$PROJECT_DIR$/utils.pyx" />
+        <option value="$PROJECT_DIR$/test_stockpyler.py" />
+        <option value="$PROJECT_DIR$/HistoryManager.pyx" />
+        <option value="$PROJECT_DIR$/Strategy.pyx" />
       </list>
     </option>
   </component>
@@ -152,20 +241,6 @@
             <path>
               <item name="stockpyler" type="b2602c69:ProjectViewProjectNode" />
               <item name="stockpyler" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="stockpyler" type="b2602c69:ProjectViewProjectNode" />
-              <item name="stockpyler" type="462c0819:PsiDirectoryNode" />
-              <item name="cython_stuff" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="stockpyler" type="b2602c69:ProjectViewProjectNode" />
-              <item name="stockpyler" type="462c0819:PsiDirectoryNode" />
-              <item name="tests" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="stockpyler" type="b2602c69:ProjectViewProjectNode" />
-              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
             </path>
           </expand>
           <select />
@@ -189,6 +264,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\mcdof\Documents\GitHub\stockpyler" />
       <recent name="C:\Users\mcdof\Documents\GitHub\stockpyler\cython_stuff" />
       <recent name="C:\Users\mcdof\Documents\GitHub\stockpyler\cython_stuff\stockpyler" />
       <recent name="C:\Users\mcdof\Documents\GitHub\stockpyler\tools" />
@@ -207,7 +283,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python tests.pytest in test_stockpyler.py">
+  <component name="RunManager" selected="Python.main">
     <configuration name="determine_trading_securities" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="stockpyler" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -302,7 +378,7 @@
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
       <option name="_new_keywords" value="&quot;&quot;" />
       <option name="_new_additionalArguments" value="&quot;&quot;" />
-      <option name="_new_target" value="&quot;$PROJECT_DIR$/tests/test_stockpyler.py&quot;" />
+      <option name="_new_target" value="&quot;$PROJECT_DIR$/test_stockpyler.py&quot;" />
       <option name="_new_targetType" value="&quot;PATH&quot;" />
       <method v="2" />
     </configuration>
@@ -315,10 +391,10 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.main" />
         <item itemvalue="Python tests.pytest in test_stockpyler.py" />
         <item itemvalue="Python tests.pytest in test_cython.py" />
         <item itemvalue="Python.setup" />
-        <item itemvalue="Python.main" />
         <item itemvalue="Python.determine_trading_securities" />
       </list>
     </recent_temporary>
@@ -386,20 +462,11 @@
       <workItem from="1558387410536" duration="1891000" />
       <workItem from="1558392696322" duration="2252000" />
       <workItem from="1558493865307" duration="2409000" />
-      <workItem from="1558560025055" duration="1382000" />
+      <workItem from="1558560025055" duration="5486000" />
     </task>
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="pytest_in_test_cython_py - 2019.05.22 at 16h 22m 50s.xml">
-      <configuration name="pytest in test_cython.py" configurationId="tests" />
-    </history-entry>
-    <history-entry file="pytest_in_test_cython_py - 2019.05.22 at 16h 23m 08s.xml">
-      <configuration name="pytest in test_cython.py" configurationId="tests" />
-    </history-entry>
-    <history-entry file="pytest_in_test_cython_py - 2019.05.22 at 16h 23m 30s.xml">
-      <configuration name="pytest in test_cython.py" configurationId="tests" />
-    </history-entry>
     <history-entry file="pytest_in_test_cython_py - 2019.05.22 at 16h 23m 44s.xml">
       <configuration name="pytest in test_cython.py" configurationId="tests" />
     </history-entry>
@@ -421,16 +488,24 @@
     <history-entry file="pytest_in_test_cython_py - 2019.05.22 at 16h 35m 09s.xml">
       <configuration name="pytest in test_cython.py" configurationId="tests" />
     </history-entry>
+    <history-entry file="pytest_in_test_stockpyler_py - 2019.05.22 at 16h 44m 17s.xml">
+      <configuration name="pytest in test_stockpyler.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="pytest_in_test_stockpyler_py - 2019.05.22 at 16h 50m 39s.xml">
+      <configuration name="pytest in test_stockpyler.py" configurationId="tests" />
+    </history-entry>
+    <history-entry file="pytest_in_test_stockpyler_py - 2019.05.22 at 16h 51m 02s.xml">
+      <configuration name="pytest in test_stockpyler.py" configurationId="tests" />
+    </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="234365000" />
+    <option name="totallyTimeSpent" value="238469000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info id="Favorites" order="0" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.20576407" />
+      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.20576407" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Database Changes" order="0" />
       <window_info anchor="bottom" id="Terminal" order="1" weight="0.32956153" />
@@ -439,7 +514,7 @@
       <window_info anchor="bottom" id="Python Console" order="4" />
       <window_info anchor="bottom" id="Docker" order="5" show_stripe_button="false" />
       <window_info anchor="bottom" id="Message" order="6" />
-      <window_info anchor="bottom" id="Find" order="7" visible="true" weight="0.32956153" />
+      <window_info anchor="bottom" id="Find" order="7" weight="0.32956153" />
       <window_info anchor="bottom" id="Run" order="8" sideWeight="0.49932975" weight="0.42149928" />
       <window_info anchor="bottom" id="Debug" order="9" weight="0.39886847" />
       <window_info anchor="bottom" id="Cvs" order="10" weight="0.25" />
@@ -469,22 +544,22 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/tools/split_dataframes_to_months.py</url>
-          <line>41</line>
+          <line>42</line>
           <option name="timeStamp" value="51" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/tools/do_all_data_prep.py</url>
-          <line>80</line>
+          <line>81</line>
           <option name="timeStamp" value="56" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/tools/do_all_data_prep.py</url>
-          <line>15</line>
+          <line>16</line>
           <option name="timeStamp" value="58" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/tools/determine_trading_securities.py</url>
-          <line>36</line>
+          <line>35</line>
           <option name="timeStamp" value="69" />
         </line-breakpoint>
       </breakpoints>
@@ -495,9 +570,9 @@
     <SUITE FILE_PATH="coverage/stockpyler$norgate_scraper.coverage" NAME="norgate_scraper Coverage Results" MODIFIED="1555717049588" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/stockpyler$norgate_loader.coverage" NAME="norgate_loader Coverage Results" MODIFIED="1555722176653" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/stockpyler$pytest_in_stockpyler.coverage" NAME="pytest in stockpyler Coverage Results" MODIFIED="1557272876922" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
-    <SUITE FILE_PATH="coverage/stockpyler$pytest_in_test_stockpyler_py.coverage" NAME="pytest in test_stockpyler.py Coverage Results" MODIFIED="1558561425672" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
+    <SUITE FILE_PATH="coverage/stockpyler$pytest_in_test_stockpyler_py.coverage" NAME="pytest in test_stockpyler.py Coverage Results" MODIFIED="1558561862275" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/stockpyler$gen_indicator_column.coverage" NAME="gen_indicator_column Coverage Results" MODIFIED="1558149126002" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tools" />
-    <SUITE FILE_PATH="coverage/stockpyler$main.coverage" NAME="main Coverage Results" MODIFIED="1558389317133" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/stockpyler$main.coverage" NAME="main Coverage Results" MODIFIED="1558565475299" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/stockpyler$pytest_in_test_sma_py.coverage" NAME="pytest in test_sma.py Coverage Results" MODIFIED="1557373622628" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
     <SUITE FILE_PATH="coverage/stockpyler$concat_all_csvs__1_.coverage" NAME="concat_all_csvs (1) Coverage Results" MODIFIED="1558301838137" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tools" />
     <SUITE FILE_PATH="coverage/stockpyler$setup.coverage" NAME="setup Coverage Results" MODIFIED="1558500821681" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/cython_stuff" />
@@ -508,31 +583,10 @@
     <SUITE FILE_PATH="coverage/stockpyler$do_all_data_prep.coverage" NAME="do_all_data_prep Coverage Results" MODIFIED="1558315918922" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tools" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://C:/Python37/Lib/site-packages/pandas/core/internals/blocks.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="115">
-          <caret line="3094" selection-start-line="3094" selection-end-line="3094" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/Python37/Lib/site-packages/pandas/core/internals/managers.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="122">
-          <caret line="1480" selection-start-line="1480" selection-end-line="1480" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://C:/Python37/Lib/site-packages/pandas/core/window.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="115">
           <caret line="1727" selection-start-line="1727" selection-end-line="1727" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/OrderTypes.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="187">
-          <caret line="11" selection-start-line="11" selection-end-line="11" />
         </state>
       </provider>
     </entry>
@@ -637,15 +691,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/strategies/MACrossover.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-102">
-          <folding>
-            <element signature="e#0#29#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/.PyCharm2019.1/system/remote_sources/-1741372490/125375885/pandas/io/feather_format.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="114">
@@ -711,13 +756,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret column="1" selection-start-column="1" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
@@ -749,16 +787,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tests/test_stockpyler.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="323">
-          <caret line="21" column="8" selection-start-line="21" selection-start-column="8" selection-end-line="21" selection-end-column="8" />
-          <folding>
-            <element signature="e#1#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tools/concat_all_csvs.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="663">
@@ -783,13 +811,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="51">
           <caret line="3" column="18" selection-start-line="3" selection-start-column="18" selection-end-line="3" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cython_stuff/test_cython.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="34" selection-start-line="1" selection-start-column="34" selection-end-line="1" selection-end-column="34" />
         </state>
       </provider>
     </entry>
@@ -823,26 +844,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/PositionManager.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-612">
-          <caret line="6" column="28" selection-start-line="6" selection-start-column="28" selection-end-line="6" selection-end-column="28" />
-          <folding>
-            <element signature="e#1#14#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/HistoryManager.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-725">
-          <caret line="61" column="27" selection-start-line="61" selection-start-column="27" selection-end-line="61" selection-end-column="27" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Feed.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="34">
@@ -859,27 +860,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Strategy.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-51">
-          <caret line="6" column="21" selection-start-line="6" selection-start-column="21" selection-end-line="6" selection-end-column="21" />
-          <folding>
-            <element signature="e#1#18#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Stockpyler.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="22" selection-start-line="1" selection-start-column="22" selection-end-line="1" selection-end-column="22" />
-          <folding>
-            <element signature="e#0#21#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Security.py">
+    <entry file="file://$PROJECT_DIR$/Security.pyx">
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <folding>
@@ -898,19 +879,96 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/common.py">
+    <entry file="file://$PROJECT_DIR$/strategies/MACrossover.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-370">
+          <folding>
+            <element signature="e#0#29#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cython_stuff/test_cython.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" column="17" lean-forward="true" selection-start-line="3" selection-start-column="17" selection-end-line="3" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/OrderTypes.pyx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-119">
+          <caret line="11" selection-start-line="11" selection-end-line="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PositionManager.pyx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="6" column="75" selection-start-line="6" selection-start-column="75" selection-end-line="6" selection-end-column="75" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Stockpyler.pyx">
       <provider selected="true" editor-type-id="text-editor">
         <state>
           <caret column="21" selection-start-column="21" selection-end-column="21" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/utils.py">
+    <entry file="file://$PROJECT_DIR$/utils.pyx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="11" selection-start-column="11" selection-end-column="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <caret column="1" selection-start-column="1" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/common.pyx">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
-          <caret line="42" column="27" selection-start-line="42" selection-start-column="27" selection-end-line="42" selection-end-column="27" />
+          <caret line="9" selection-start-line="9" selection-end-line="9" />
           <folding>
-            <element signature="e#0#11#0" expanded="true" />
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/HistoryManager.pyx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1921">
+          <caret line="113" column="13" lean-forward="true" selection-start-line="113" selection-start-column="13" selection-end-line="113" selection-end-column="13" />
+          <folding>
+            <element signature="e#0#9#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/__init__.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/test_stockpyler.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="476">
+          <caret line="31" column="37" selection-start-line="31" selection-start-column="37" selection-end-line="31" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Strategy.pyx">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="14" selection-start-line="14" selection-end-line="14" />
+          <folding>
+            <element signature="e#1#18#0" expanded="true" />
           </folding>
         </state>
       </provider>

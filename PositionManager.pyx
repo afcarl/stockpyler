@@ -1,12 +1,10 @@
 
-import common
 import OrderTypes
-import utils
+import common
 
 
-class PositionManager(utils.NextableClass):
+class PositionManager:
     def __init__(self, stockpyler, initial_cash=1000.0, stock_margin = .5):
-        super().__init__()
         self.sp = stockpyler
         self.current_cash = initial_cash
         self.stock_margin = stock_margin

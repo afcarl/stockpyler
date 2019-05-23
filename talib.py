@@ -1,8 +1,5 @@
-
-
-import numpy
 import pandas as pd
-import math as m
+
 
 #These methods can take a few different things:
 # a feed

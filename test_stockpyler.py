@@ -1,3 +1,5 @@
+import pyximport
+pyximport.install(language_level=3)
 
 import Stockpyler
 import Strategy
@@ -18,7 +20,7 @@ class MyStrategy(Strategy.Strategy):
 
     def next(self):
         print(self.today())
-        securities = list(self.get_trading_securities())
+        securities = self.get_trading_securities()
         print(len(securities))
         #securities = sorted(securities, key=lambda x: self.sort_by_float(x,0))
         #print(securities)
@@ -27,8 +29,8 @@ class MyStrategy(Strategy.Strategy):
         super().next()
 
     def sort_by_float(self, security, index):
-        ohlcv = self.ohlvc(security,index)
-        return float(ohlcv.volume)*float(ohlcv.close)
+        ohlcv = self.ohlvc(security, index)
+        return ohlcv.volume * ohlcv.close
 
 #@memory_profiler.profile()
 @utils.timeit

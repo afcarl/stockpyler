@@ -1,4 +1,4 @@
-import tests.test_stockpyler
+import test_stockpyler
 
 print("Asdf")
-tests.test_stockpyler.test_stockpyler()
+test_stockpyler.test_stockpyler()

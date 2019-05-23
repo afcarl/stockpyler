@@ -1,7 +1,9 @@
-import os
-import pandas as pd
-import multiprocessing
 import itertools
+import multiprocessing
+import os
+
+import pandas as pd
+
 NORGATE_COLUMNS = ['datetime','open','high','low','close','volume','turnover','aux1','aux2','aux3']
 
 

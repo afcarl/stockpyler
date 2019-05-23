@@ -1,8 +1,10 @@
-import urllib.request
-import pandas as pd
 import io
-import common
 import os
+import urllib.request
+
+import pandas as pd
+
+import common
 
 
 class KibotApi(metaclass=common.Singleton):

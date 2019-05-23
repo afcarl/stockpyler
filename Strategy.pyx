@@ -1,19 +1,17 @@
 
 import OrderTypes
-import common
 import Stockpyler
-import utils
+import common
 
-class Strategy(utils.NextableClass):
+
+class Strategy:
 
     def __init__(self, stockpyler: Stockpyler.Stockpyler, *args, **kwargs):
-        super().__init__()
         self._sp = stockpyler
         self._pending_orders = []
 
     def ohlvc(self, security, index):
         return self._sp.hm.ohlcv(security,index)
-
 
     def stop(self):
         #TODO: liquidate positions
@@ -21,9 +19,6 @@ class Strategy(utils.NextableClass):
 
     def next(self):
         pass
-        #for ind in self._indicators[s]:
-        #    for s in self.get_trading_securities():
-        #        ind.next()
 
     def get_position(self, security):
         return self._sp.pm.position_size(security)

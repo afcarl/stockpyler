@@ -1,4 +1,11 @@
+import os
 from enum import Enum
+
+if os.path.isdir('/mnt/c'):
+    BASE_DIR = '/mnt/c/Users/mcdof/Documents/NDExport/'
+else:
+    BASE_DIR = 'C:/Users/mcdof/Documents/NDExport/'
+
 
 class IntervalType(Enum):
     MINUTE = "minute"

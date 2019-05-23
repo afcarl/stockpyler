@@ -1,9 +1,9 @@
 import os
+
 import ciso8601
-import sys
-import utils
-import csv
 import pandas as pd
+
+from common import BASE_DIR
 
 '''HistoryManager
 
@@ -11,17 +11,14 @@ In the interest of time vs space, eventually this will do something more complex
 multi security portfolio backtesting. until then, try not to add too many
 
 '''
-if os.path.isdir('/mnt/c'):
-    BASE_DIR = '/mnt/c/Users/mcdof/Documents/NDExport/'
-else:
-    BASE_DIR = 'C:/Users/mcdof/Documents/NDExport/'
+
 
 ALL_DATA_FIELDS = ['Open', 'High', 'Low', 'Close', 'Volume', 'Close_ma200']
 #ALL_DATA_FIELDS = [ 'Close', 'Close_ma200']
 
-class OHLCV:
+cdef class OHLCV:
     __slots__ = ['datetime', 'open', 'high', 'low', 'close', 'volume']
-
+    cdef double open, high, low, close, volume
     def __init__(self, dt, o, h, l, c, v):
         self.datetime = dt
         self.open = o
@@ -59,10 +56,10 @@ def slice_dicts(d, num_lines):
             del d[k]
 
 
-class HistoryManager(utils.NextableClass):
+class HistoryManager:
 
     def __init__(self, stockpyler):
-        super().__init__()
+        self._done = False
         self._sp = stockpyler
         self.today = None
         self.trading_securities = []
@@ -72,14 +69,15 @@ class HistoryManager(utils.NextableClass):
         self._csv_num = 0
         for thing in ALL_DATA_FIELDS:
             self.feeds[thing] = self._load_next_feather(thing)
-        self._chunksize = len(self.feeds['Open']['Date'])
+        self._chunksize = 100 #len(self.feeds['Open']['Date'])
         self.trading_securities_file = open(os.path.join(BASE_DIR, 'TRADING_SECURITIES.txt'), 'rt')
         self.today, self.trading_securities = self._determine_trading_securities()
 
     def _load_next_feather(self, column):
         csv_file = os.path.join(BASE_DIR, 'ALL_DATA_' + column.upper() + '_' + str(self._csv_num) + '.feather')
-        f = pd.read_feather(csv_file, columns=['Date','$DJIT'])
-        return f.to_dict(orient='list')
+        df = pd.read_feather(csv_file,columns=['Date','QCOM'])
+        #df.set_index('Date',inplace=True,)
+        return df.to_dict(orient='list')
 
     def _determine_trading_securities(self):
         line = next(self.trading_securities_file)
@@ -91,6 +89,9 @@ class HistoryManager(utils.NextableClass):
 
     def get_num_trading_securities(self):
         return len(self.get_trading_securities())
+
+    def start(self):
+        pass
 
     def next(self):
         self._pos += 1

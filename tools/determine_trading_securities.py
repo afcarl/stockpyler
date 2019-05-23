@@ -1,10 +1,9 @@
 import os
-import pandas as pd
 from collections import defaultdict
-import ciso8601
-import pickle
-import gzip
+
 import numpy as np
+import pandas as pd
+
 NORGATE_COLUMNS = ['datetime','open','high','low','close','volume','turnover','aux1','aux2','aux3']
 
 
