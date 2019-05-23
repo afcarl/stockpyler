@@ -16,22 +16,21 @@ multi security portfolio backtesting. until then, try not to add too many
 ALL_DATA_FIELDS = ['Open', 'High', 'Low', 'Close', 'Volume', 'Close_ma200']
 #ALL_DATA_FIELDS = [ 'Close', 'Close_ma200']
 
-cdef class OHLCV:
-    __slots__ = ['datetime', 'open', 'high', 'low', 'close', 'volume']
-    cdef double open, high, low, close, volume
-    def __init__(self, dt, o, h, l, c, v):
-        self.datetime = dt
+class OHLCV:
+    def __init__(self, dt, o, h, l, c, v, ma200):
+        self.dt = dt
         self.open = o
         self.high = h
         self.low = l
         self.close = c
         self.volume = v
+        self.ma200 = ma200
 
     def __getitem__(self, item):
         return self.__getattribute__(item)
 
     def __str__(self):
-        return '{}: o:{} h: {} l: {} c: {} v:{}'.format(self.datetime,self.open,self.high,self.low,self.close,self.volume)
+        return '{}: o:{} h: {} l: {} c: {} v:{}'.format(self.dt,self.open,self.high,self.low,self.close,self.volume)
 
 def parse_trading_securities_line(l):
     l = l.strip()
@@ -59,6 +58,7 @@ def slice_dicts(d, num_lines):
 class HistoryManager:
 
     def __init__(self, stockpyler):
+        self.enabled_securities = ['XOM']
         self._done = False
         self._sp = stockpyler
         self.today = None
@@ -75,14 +75,14 @@ class HistoryManager:
 
     def _load_next_feather(self, column):
         csv_file = os.path.join(BASE_DIR, 'ALL_DATA_' + column.upper() + '_' + str(self._csv_num) + '.feather')
-        df = pd.read_feather(csv_file,columns=['Date','QCOM'])
+        df = pd.read_feather(csv_file,columns=['Date'] + self.enabled_securities)
         #df.set_index('Date',inplace=True,)
         return df.to_dict(orient='list')
 
     def _determine_trading_securities(self):
         line = next(self.trading_securities_file)
-        line = parse_trading_securities_line(line)
-        return line
+        today, line = parse_trading_securities_line(line)
+        return today, list(set(line).intersection(set(self.enabled_securities)))
 
     def get_trading_securities(self):
         return self.trading_securities
@@ -117,8 +117,9 @@ class HistoryManager:
         l = self.feeds['Low'][security][index]
         c = self.feeds['Close'][security][index]
         v = self.feeds['Volume'][security][index]
+        ma200 = self.feeds['Close_ma200'][security][index]
 
-        return OHLCV(dt, o, h, l, c, v)
+        return OHLCV(dt, o, h, l, c, v, ma200)
 
 
 
