@@ -1,8 +1,9 @@
 import os
-
+import common
 import ciso8601
 import pandas as pd
-
+import feather
+import json
 from common import BASE_DIR
 
 '''HistoryManager
@@ -32,13 +33,6 @@ class OHLCV:
     def __str__(self):
         return '{}: o:{} h: {} l: {} c: {} v:{}'.format(self.dt,self.open,self.high,self.low,self.close,self.volume)
 
-def parse_trading_securities_line(l):
-    l = l.strip()
-    ts, securities = l.split(' ')
-    ts = ciso8601.parse_datetime(ts)
-    securities = securities.split(',')
-    return ts, securities
-
 
 def extend_dicts(d1, d2):
     for k,v in d2.items():
@@ -58,7 +52,9 @@ def slice_dicts(d, num_lines):
 class HistoryManager:
 
     def __init__(self, stockpyler):
-        self.enabled_securities = ['XOM']
+        self.enabled_securities = common.get_random_securities(1000)
+        with open(os.path.join(BASE_DIR,'security_starts_ends.json'), 'r') as f:
+            self.start_end_dates = json.load(f)
         self._done = False
         self._sp = stockpyler
         self.today = None
@@ -69,23 +65,32 @@ class HistoryManager:
         self._csv_num = 0
         for thing in ALL_DATA_FIELDS:
             self.feeds[thing] = self._load_next_feather(thing)
-        self._chunksize = 100 #len(self.feeds['Open']['Date'])
-        self.trading_securities_file = open(os.path.join(BASE_DIR, 'TRADING_SECURITIES.txt'), 'rt')
-        self.today, self.trading_securities = self._determine_trading_securities()
+        self._load_next_trading_securities()
+        self._chunksize = 100
+        self.today = self.trading_securities[0][0]
 
     def _load_next_feather(self, column):
         csv_file = os.path.join(BASE_DIR, 'ALL_DATA_' + column.upper() + '_' + str(self._csv_num) + '.feather')
-        df = pd.read_feather(csv_file,columns=['Date'] + self.enabled_securities)
+        df = feather.read_dataframe(csv_file,columns = ['Date'] + self.enabled_securities)
+        #df = pd.read_feather(csv_file,columns=['Date'] + self.enabled_securities)
         #df.set_index('Date',inplace=True,)
-        return df.to_dict(orient='list')
+        ret= df.to_dict(orient='list')
+        return ret
 
-    def _determine_trading_securities(self):
-        line = next(self.trading_securities_file)
-        today, line = parse_trading_securities_line(line)
-        return today, list(set(line).intersection(set(self.enabled_securities)))
+    def _load_next_trading_securities(self):
+        path = os.path.join(BASE_DIR, 'TRADING_SECURITIES_' + str(self._csv_num) + '.json')
+        assert os.path.exists(path)
+        self.trading_securities = dict()
+        with open(path, 'r') as f:
+            secs = json.load(f)
+            for k, v in secs.items():
+                v = set(v).intersection(set(self.enabled_securities))
+                self.trading_securities[ciso8601.parse_datetime(k)] = list(v)
+        self.trading_securities = list(sorted(self.trading_securities.items()))
+        pass
 
     def get_trading_securities(self):
-        return self.trading_securities
+        return self.trading_securities[self._pos][1]
 
     def get_num_trading_securities(self):
         return len(self.get_trading_securities())
@@ -103,10 +108,10 @@ class HistoryManager:
                 n = self._load_next_feather(thing)
                 extend_dicts(self.feeds[thing], n)
                 slice_dicts(self.feeds[thing], self._chunksize)
-                pass
+            self._load_next_trading_securities()
         try:
-            self.today, self.trading_securities = self._determine_trading_securities()
-        except StopIteration:
+            self.today =  self.trading_securities[self._pos][0]
+        except:
             self._done = True
 
     def ohlcv(self, security, index):

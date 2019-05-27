@@ -20,7 +20,7 @@ class Observer:
         if dt not in self._dt_value_map:
             self._dt_value_map[dt] = [value]
         else:
-            self._dt_value_map.append(value)
+            self._dt_value_map[dt].append(value)
 
 
 class AccountValueObserver(Observer):

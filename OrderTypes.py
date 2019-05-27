@@ -9,7 +9,7 @@ class Order(ABC):
         self.security = security
         self.action = action
         self.num_contracts = num_contracts
-        assert num_contracts > 0, "cant buy or sell negative number of contracts!"
+        assert num_contracts > 0, "cant buy or sell negative number of contracts!: {}".format(num_contracts)
 
     @abstractmethod
     def update(self, ohlc):

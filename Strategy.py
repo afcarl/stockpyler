@@ -26,6 +26,9 @@ class Strategy:
     def get_value(self):
         return self._sp.pm.get_current_value()
 
+    def get_cash(self):
+        return self._sp.pm.get_current_cash()
+
     def get_trading_securities(self):
         return self._sp.hm.get_trading_securities()
 
@@ -41,12 +44,16 @@ class Strategy:
 
     #TODO: move actual impls to Stockpyler class?
     def buy(self, security, quantity):
+        if quantity == 0:
+            return None
         o = OrderTypes.MarketOrder(security, common.OrderAction.BUY, quantity)
         o = self._sp.pm.simple_order(o)
         self._pending_orders.append(o)
         return o
 
     def sell(self, security, quantity):
+        if quantity == 0:
+            return None
         o = OrderTypes.MarketOrder(security, common.OrderAction.SELL, quantity)
         o = self._sp.pm.simple_order(o)
         self._pending_orders.append(o)

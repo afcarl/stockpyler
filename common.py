@@ -1,10 +1,25 @@
 import os
 from enum import Enum
+import random
 
 if os.path.isdir('/mnt/c'):
     BASE_DIR = '/mnt/c/Users/mcdof/Documents/NDExport/'
 else:
     BASE_DIR = 'C:/Users/mcdof/Documents/NDExport/'
+
+def get_all_from(base_path, ending):
+    for root, dirs, files in os.walk(base_path, topdown=False):
+       for name in files:
+           fullpath = os.path.join(root, name)
+           if fullpath.endswith(ending):
+               yield fullpath
+
+def get_random_securities(num_stocks):
+    securities = list(get_all_from(os.path.join(BASE_DIR, 'US Equities'),'.feather'))
+    securities = [os.path.basename(p).replace('.feather','') for p in securities]
+    random.shuffle(securities)
+    return securities[:num_stocks]
+
 
 
 class IntervalType(Enum):

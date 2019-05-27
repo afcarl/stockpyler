@@ -1,5 +1,5 @@
-import pyximport
-pyximport.install(language_level=3)
+#import pyximport
+#pyximport.install(language_level=3)
 
 import Stockpyler
 import Strategy
@@ -10,9 +10,8 @@ class MyStrategy(Strategy.Strategy):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.ma200s = dict()
-        self.max_positions = 50
-        self.cur_positions = 0
+        self.max_positions = 3
+        self.cur_positions = 1
 
     def stop(self):
         pass
@@ -20,14 +19,17 @@ class MyStrategy(Strategy.Strategy):
 
     def next(self):
         print(self.today())
-        securities = self.get_trading_securities()
+        securities = sorted(self.get_trading_securities(),key=lambda x: self.sort_by_float(x,0))
         for s in securities:
             ohlcv = self.ohlvc(s, 0)
 
-            if ohlcv.close > ohlcv.ma200 and self.get_position(s) == 0:
-                num_stocks = int(self.get_value() / ohlcv.close * .9)
+            if ohlcv.close > ohlcv.ma200 and self.get_position(s) == 0 and self.cur_positions < self.max_positions:
+                c = self.get_cash()
+                num_stocks = int(self.get_cash() / self.get_num_trading_securities() / ohlcv.close *.9)
+                self.cur_positions+=1
                 self.buy(s,num_stocks)
             elif ohlcv.close < ohlcv.ma200 and self.get_position(s) > 0:
+                self.cur_positions-=1
                 self.sell(s, self.get_position(s))
         print(len(securities))
         #securities = sorted(securities, key=lambda x: self.sort_by_float(x,0))

@@ -1,10 +1,10 @@
-
+import math
 import OrderTypes
 import common
 
 
 class PositionManager:
-    def __init__(self, stockpyler, initial_cash=1000.0, stock_margin = .5):
+    def __init__(self, stockpyler, initial_cash=1000000.0, stock_margin = .5):
         self.sp = stockpyler
         self.current_cash = initial_cash
         self.stock_margin = stock_margin
@@ -42,9 +42,11 @@ class PositionManager:
         return self.current_order_id
 
     def next(self):
+        assert self.current_cash > 0
         new_orders = []
         for order in self.orders:
             ohlc = self.sp.hm.ohlcv(order.security, 0)
+            cash = self.current_cash
             execute, price = order.test(ohlc)
             if execute:
                 if self.can_place_order(order):
@@ -54,7 +56,9 @@ class PositionManager:
             else:
                 order.update(ohlc)
                 new_orders.append(order)
+            assert self.current_cash > 0
         self.orders = new_orders
+        assert self.current_cash > 0
 
     def add_position(self, security, num_contracts):
         if security not in self.positions:
@@ -94,7 +98,14 @@ class PositionManager:
 
     def get_current_value(self):
         value = self.get_current_cash()
+        if math.isnan(value):
+            print('asdf')
         for k, v in self.positions.items():
+            ohlvc = self.sp.hm.ohlcv(k, 0)
+            if math.isnan(self.sp.hm.ohlcv(k, 0).close):
+                print('asdf')
+            if math.isnan(v):
+                print('asdf')
             value += self.sp.hm.ohlcv(k, 0).close * v
         return value
 
