@@ -42,30 +42,12 @@ class Strategy:
         #TODO: fix
         return False
 
-    #TODO: move actual impls to Stockpyler class?
     def buy(self, security, quantity):
-        if quantity == 0:
-            return None
-        o = OrderTypes.MarketOrder(security, common.OrderAction.BUY, quantity)
-        o = self._sp.pm.simple_order(o)
-        self._pending_orders.append(o)
-        return o
+        return self._sp.pm.buy(security, quantity)
 
     def sell(self, security, quantity):
-        if quantity == 0:
-            return None
-        o = OrderTypes.MarketOrder(security, common.OrderAction.SELL, quantity)
-        o = self._sp.pm.simple_order(o)
-        self._pending_orders.append(o)
-        return o
+        return self._sp.pm.sell(security, quantity)
 
     def close(self, security, quantity):
-        current_posititon = self._sp.pm.position_size(security)
-        assert current_posititon != 0, "You can't close out an empty position!"
-        act = common.OrderAction.SELL if current_posititon > 0 else common.OrderAction.BUY
-
-        o = OrderTypes.MarketOrder(security, act, quantity)
-        o = self._sp.pm.simple_order(o)
-        self._pending_orders.append(o)
-        return o
+        return self._sp.pm.close(security, quantity)
 

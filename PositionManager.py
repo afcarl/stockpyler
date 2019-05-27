@@ -4,8 +4,8 @@ import common
 
 
 class PositionManager:
-    def __init__(self, stockpyler, initial_cash=1000000.0, stock_margin = .5):
-        self.sp = stockpyler
+    def __init__(self, stockpyler, initial_cash=10000.0, stock_margin = .5):
+        self._sp = stockpyler
         self.current_cash = initial_cash
         self.stock_margin = stock_margin
         self.current_margin = 0.
@@ -13,6 +13,30 @@ class PositionManager:
 
         self.orders = list()
         self.current_order_id = 0
+
+    def buy(self, security, quantity):
+        if quantity == 0:
+            return None
+        o = OrderTypes.MarketOrder(security, common.OrderAction.BUY, quantity)
+        o = self.simple_order(o)
+        return o
+
+    def sell(self, security, quantity):
+        if quantity == 0:
+            return None
+        o = OrderTypes.MarketOrder(security, common.OrderAction.SELL, quantity)
+        o = self.simple_order(o)
+        return o
+
+    def close(self, security, quantity):
+        current_posititon = self._sp.pm.position_size(security)
+        assert current_posititon != 0, "You can't close out an empty position!"
+        act = common.OrderAction.SELL if current_posititon > 0 else common.OrderAction.BUY
+
+        o = OrderTypes.MarketOrder(security, act, quantity)
+        o = self.simple_order(o)
+        return o
+
 
     def simple_order(self, order):
         assert isinstance(order, OrderTypes.MarketOrder), "Only simple market orders are supported"
@@ -44,13 +68,18 @@ class PositionManager:
     def next(self):
         assert self.current_cash > 0
         new_orders = []
+        for p, num_stocks in self.positions.items():
+            today = self._sp.hm.today
+            if self._sp.hm.start_end_dates[p][1] == today:
+                self.close(p, num_stocks)
+
         for order in self.orders:
-            ohlc = self.sp.hm.ohlcv(order.security, 0)
+            ohlc = self._sp.hm.ohlcv(order.security, 0)
             cash = self.current_cash
             execute, price = order.test(ohlc)
             if execute:
                 if self.can_place_order(order):
-                    self.sp.pm.execute_order(order, ohlc)
+                    self._sp.pm.execute_order(order, ohlc)
                 else:
                     order.status = common.OrderExecutionStatus.MARGIN
             else:
@@ -58,6 +87,7 @@ class PositionManager:
                 new_orders.append(order)
             assert self.current_cash > 0
         self.orders = new_orders
+
         assert self.current_cash > 0
 
     def add_position(self, security, num_contracts):
@@ -84,7 +114,7 @@ class PositionManager:
         size = self.position_size(security)
         action = 'BUY' if size < 0 else 'SELL'
         o = OrderTypes.MarketOrder(security, action, size)
-        self.sp.om.simple(o)
+        self._sp.om.simple(o)
 
     def liquidate_all(self):
         for security in self.get_positions():
@@ -101,12 +131,12 @@ class PositionManager:
         if math.isnan(value):
             print('asdf')
         for k, v in self.positions.items():
-            ohlvc = self.sp.hm.ohlcv(k, 0)
-            if math.isnan(self.sp.hm.ohlcv(k, 0).close):
+            ohlvc = self._sp.hm.ohlcv(k, 0)
+            if math.isnan(self._sp.hm.ohlcv(k, 0).close):
                 print('asdf')
             if math.isnan(v):
                 print('asdf')
-            value += self.sp.hm.ohlcv(k, 0).close * v
+            value += self._sp.hm.ohlcv(k, 0).close * v
         return value
 
     def increases_exposure(self, order):
@@ -117,7 +147,7 @@ class PositionManager:
 
     def execute_order(self, order, ohlc=None):
 
-        ohlc = ohlc if ohlc is not None else self.sp.hm.get_history(order.security)[0]
+        ohlc = ohlc if ohlc is not None else self._sp.hm.get_history(order.security)[0]
         executed, price = order.test(ohlc)
         assert executed, "trying to execute order that wont execute!"
 
@@ -133,7 +163,7 @@ class PositionManager:
 
     def calculate_capital_impact(self, order, ohlc=None):
         # if ret > 0, you're increasing exposure. if ret < 0, you're decreasing exposure
-        ohlc = ohlc if ohlc else self.sp.hm.ohlcv(order.security, 0)
+        ohlc = ohlc if ohlc else self._sp.hm.ohlcv(order.security, 0)
         current_value = self.position_size(order.security) * ohlc.close
         executed, price = order.test(ohlc)
         order_value = price * order.num_contracts * -1 if order.action == common.OrderAction.SELL else 1

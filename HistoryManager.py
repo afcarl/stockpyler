@@ -53,8 +53,11 @@ class HistoryManager:
 
     def __init__(self, stockpyler):
         self.enabled_securities = common.get_random_securities(1000)
-        with open(os.path.join(BASE_DIR,'security_starts_ends.json'), 'r') as f:
-            self.start_end_dates = json.load(f)
+        with open(os.path.join(BASE_DIR, 'security_starts_ends.json'), 'r') as f:
+            secs = json.load(f)
+            self.start_end_dates = dict()
+            for k,v in secs.items():
+                self.start_end_dates[k] = (ciso8601.parse_datetime(v[0]), ciso8601.parse_datetime(v[1]))
         self._done = False
         self._sp = stockpyler
         self.today = None
@@ -74,7 +77,7 @@ class HistoryManager:
         df = feather.read_dataframe(csv_file,columns = ['Date'] + self.enabled_securities)
         #df = pd.read_feather(csv_file,columns=['Date'] + self.enabled_securities)
         #df.set_index('Date',inplace=True,)
-        ret= df.to_dict(orient='list')
+        ret = df.to_dict(orient='list')
         return ret
 
     def _load_next_trading_securities(self):
@@ -87,7 +90,6 @@ class HistoryManager:
                 v = set(v).intersection(set(self.enabled_securities))
                 self.trading_securities[ciso8601.parse_datetime(k)] = list(v)
         self.trading_securities = list(sorted(self.trading_securities.items()))
-        pass
 
     def get_trading_securities(self):
         return self.trading_securities[self._pos][1]
