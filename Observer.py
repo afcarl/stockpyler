@@ -15,8 +15,8 @@ class Observer:
         return self._sp.hm.today
 
     def add_value(self, dt, value):
-        if self._sp.hm.get_num_trading_securities() == 0:
-            return
+        #if self._sp.hm.get_num_trading_securities() == 0:
+        #    return
         if dt not in self._dt_value_map:
             self._dt_value_map[dt] = [value]
         else:

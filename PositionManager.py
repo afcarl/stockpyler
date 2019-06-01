@@ -53,7 +53,7 @@ class PositionManager:
         ids = [self.next_order_id() for _ in orders]
 
         for id, order in zip(ids, orders):
-            if not self.sp.pm.can_place_order(order):
+            if not self._sp.pm.can_place_order(order):
                 return common.OrderExecutionStatus.ORDER_NOT_PLACED
             order.id = id
             order.cancels = list(filter(lambda x: x != id, ids))

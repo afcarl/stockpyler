@@ -1,16 +1,29 @@
 import itertools
 import multiprocessing
 import os
+import numpy as np
 
 import pandas as pd
 
 if os.path.isdir('/mnt/c'):
     BASE_DIR = '/mnt/c/Users/mcdof/Documents/NDExport/'
+elif os.path.isdir('/home/forrest/NDExport'):
+    BASE_DIR = '/home/forrest/NDExport'
+elif os.path.isdir('/media/forrest/18345166345147C0/Users/mcdof/Documents/NDExport/'):
+    BASE_DIR = '/media/forrest/18345166345147C0/Users/mcdof/Documents/NDExport/'
 else:
     BASE_DIR = 'C:/Users/mcdof/Documents/NDExport/'
 
-
-
+CSV_TYPES = {
+    'Open':np.float64,
+    'High':np.float64,
+    'Low':np.float64,
+    'Close':np.float64,
+    'Turnover':np.float64,
+    'Volume':np.float64,
+    'Unadjusted Close':np.float64,
+}
+HEADER_STR = 'Symbol,Open,High,Low,Close,Volume,Turnover,Unadjusted_Close,Close_ma200,Average_Float\n'
 
 def del_all_csvs():
     for thing in get_all_from(BASE_DIR, '.csv'):
@@ -19,65 +32,137 @@ def del_all_csvs():
         print("deleting",thing)
         os.remove(thing)
 
-def get_all_from(base_path, ending):
-    for root, dirs, files in os.walk(base_path, topdown=False):
-       for name in files:
-           fullpath = os.path.join(root, name)
-           if fullpath.endswith(ending):
-               yield fullpath
+def get_all_from(base_path, ending, recursive=True):
+    if recursive:
+        for root, dirs, files in os.walk(base_path, topdown=False):
+           for name in files:
+               fullpath = os.path.join(root, name)
+               if fullpath.endswith(ending):
+                   yield fullpath
+    else:
+        for name in os.listdir(base_path):
+            if name.endswith(ending):
+                yield os.path.join(base_path,name)
 
 
 def convert_to_feather(path):
-    try:
-        df = pd.read_csv(path)
-        print("converting",path)
-        df.to_feather(path.replace('.csv','.feather'))
-    except:
-        pass
+    new_path = path.replace('.csv','.feather')
+    #if os.path.isfile(new_path):
+    #    return
+    df = pd.read_csv(path)
+    print("converting to feather",path)
+    df.to_feather(path.replace('.csv','.feather'))
+
 
 def add_indicator_column(path):
+    print("writing",path)
     try:
-        print("writing",path)
-        df = pd.read_feather(path)
-        new_df = pd.DataFrame({'Close_ma200': df['Close'].rolling(200, min_periods=1).mean()})
-        df = df.join(new_df)
-        df.to_feather(path)
+        df = pd.read_csv(path, dtype=CSV_TYPES)
+    except pd.errors.EmptyDataError:
+        return
+    close_ma200 = pd.DataFrame({'Close_ma200': df['Close'].rolling(200, min_periods=1).mean()})
+    average_float = pd.DataFrame({'Average_Float': (df['Close'] * df['Volume']).rolling(200, min_periods=1).mean()})
+    df = df.join(close_ma200)
+    df = df.join(average_float)
+    df.rename({'Unadjusted Close':'Unadjusted_Close'}, inplace=True, axis='columns')
+    df.to_feather(path.replace('.csv', '.feather'))
 
-    except:
-        pass
-
-def convert_all_to_feather():
-    p = multiprocessing.Pool(8)
-    p.map(convert_to_feather, get_all_from(BASE_DIR,'.csv'))
+def convert_all_to_feather(recursive):
+    #for thing in get_all_from(BASE_DIR,'.csv',recursive):
+    #    convert_to_feather(thing)
+    p = multiprocessing.Pool(4)
+    p.map(convert_to_feather, get_all_from(BASE_DIR,'.csv',recursive))
 
 
 def gen_all_indicators():
-    p = multiprocessing.Pool(8)
-    p.map(add_indicator_column, get_all_from(BASE_DIR,'.feather'))
+    p = multiprocessing.Pool(4)
+    #for thing in get_all_from(BASE_DIR,'.csv'):
+    #    add_indicator_column(thing)
+    p.map(add_indicator_column, get_all_from(BASE_DIR,'.csv'))
+
+DATE_CSV_MAP = dict()
+
+def _to_daily_csv(feather):
+    print("splitting to daily files:",feather)
+    df = pd.read_feather(feather)
+    for row in df.itertuples():
+        date = row.Date
+        line = ','.join(str(s) for s in row[2:]) + '\n'
+        fullpath = os.path.join(BASE_DIR, date + '.csv')
+        DATE_CSV_MAP[fullpath].write(line)
 
 def to_daily_csvs():
-    DATE_CSV_MAP = dict()
-    for feather in get_all_from(BASE_DIR, '.feather'):
-        print(feather)
-        df = pd.read_feather(feather)
-        for row in df.itertuples():
-            date = row.Date
-            line = ','.join(str(s) for s in row[2:]) + '\n'
-            fullpath = os.path.join(BASE_DIR, date + '.csv')
-            if fullpath not in DATE_CSV_MAP:
-                print("opening",fullpath)
-                f = open(fullpath, 'w+')
-                DATE_CSV_MAP[fullpath] = f
-            DATE_CSV_MAP[fullpath].write(line)
-            #print(fullpath)
+    df = pd.read_feather(os.path.join(BASE_DIR, 'USIndices', '$DJIT.feather'))
+    for date in df['Date']:
+        fullpath = os.path.join(BASE_DIR, date + '.csv')
+        if fullpath not in DATE_CSV_MAP:
+            print("opening", fullpath)
+            f = open(fullpath, 'w+')
+            f.write(HEADER_STR)
+            DATE_CSV_MAP[fullpath] = f
+
+    DATE_CSV_MAP['/home/forrest/NDExport/2019-05-29.csv'] = open('/home/forrest/NDExport/2019-05-29.csv','w')
+
+    for f in get_all_from(BASE_DIR,'.feather'):
+        _to_daily_csv(f)
+
     for f in DATE_CSV_MAP.values():
         f.close()
 
+def _sort_by_float(path):
+    df = pd.read_feather(path)
+    df.sort_values('Average_Float', inplace=True, ascending=False)
+    df.reset_index(inplace=True)
+    df.drop(['index'], axis='columns', inplace=True)
+    print("Sorting by float",path)
+    df.to_feather(path)
 
+def sort_by_float():
+    #p = multiprocessing.Pool(4)
+    # for thing in get_all_from(BASE_DIR,'.csv'):
+    #    add_indicator_column(thing)
+    #p.map(_sort_by_float, get_all_from(BASE_DIR, '.feather', False))
+    for thing in get_all_from(BASE_DIR, '.feather', False):
+        _sort_by_float(thing)
+
+def generate_trading_securities():
+    subdirs = [
+        'AUEquities',
+        'AUIndices',
+        #'AUETOs',
+        #'AUWarrants',
+        'CashCommodities',
+        'ContinuousFutures',
+        'Economic',
+        'ForexSpot',
+        'USEquities',
+        'USIndices',
+        'WorldIndices',
+    ]
+
+    all_start_end = dict()
+    for d in subdirs:
+        for f in os.listdir(os.path.join(BASE_DIR,d)):
+            if not f.endswith('.feather'):
+                continue
+            stock_name = f.replace('.feather', '')
+            fullpath = os.path.join(BASE_DIR,d,f)
+            df = pd.read_feather(fullpath)
+            start = df['Date'].iloc[0]
+            end = df['Date'].iloc[-1]
+            all_start_end[f] = (start, end)
+            print(stock_name, start, end)
+    import json
+    with open(BASE_DIR + 'security_starts_ends.json', 'w+') as f:
+        print("Writing",BASE_DIR + 'security_starts_ends.json')
+        json.dump(all_start_end, f)
 
 
 if __name__ == '__main__':
-    #convert_all_to_feather()
-    #del_all_csvs()
     #gen_all_indicators()
-    to_daily_csvs()
+    #del_all_csvs()
+    #to_daily_csvs()
+    #convert_all_to_feather(False)
+    #sort_by_float()
+    #del_all_csvs()
+    generate_trading_securities()

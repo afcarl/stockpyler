@@ -4,8 +4,13 @@ import random
 
 if os.path.isdir('/mnt/c'):
     BASE_DIR = '/mnt/c/Users/mcdof/Documents/NDExport/'
+elif os.path.isdir('/home/forrest/NDExport'):
+    BASE_DIR = '/home/forrest/NDExport'
+elif os.path.isdir('/media/forrest/18345166345147C0/Users/mcdof/Documents/NDExport/'):
+    BASE_DIR = '/media/forrest/18345166345147C0/Users/mcdof/Documents/NDExport/'
 else:
     BASE_DIR = 'C:/Users/mcdof/Documents/NDExport/'
+
 
 def get_all_from(base_path, ending):
     for root, dirs, files in os.walk(base_path, topdown=False):
