@@ -2,8 +2,11 @@ import itertools
 import multiprocessing
 import os
 import numpy as np
-
+import ciso8601
+import struct
 import pandas as pd
+import csv
+import time
 
 if os.path.isdir('/mnt/c'):
     BASE_DIR = '/mnt/c/Users/mcdof/Documents/NDExport/'
@@ -22,8 +25,14 @@ CSV_TYPES = {
     'Turnover':np.float64,
     'Volume':np.float64,
     'Unadjusted Close':np.float64,
+    'Close_ma200':np.float64,
+    'Average_Float':np.float64,
 }
 HEADER_STR = 'Symbol,Open,High,Low,Close,Volume,Turnover,Unadjusted_Close,Close_ma200,Average_Float\n'
+
+ALL_DATA_HEADER_STR = 'Date,Symbol,Open,High,Low,Close,Volume,Turnover,Unadjusted_Close,Close_ma200,Average_Float\n'
+
+RFF_LINE_FORMAT = 'q24s12d'
 
 def del_all_csvs():
     for thing in get_all_from(BASE_DIR, '.csv'):
@@ -125,6 +134,50 @@ def sort_by_float():
     for thing in get_all_from(BASE_DIR, '.feather', False):
         _sort_by_float(thing)
 
+def concat_dailies():
+    with open(os.path.join(BASE_DIR,'ALL_DATA.csv'),'w+') as out_f:
+        out_f.write(ALL_DATA_HEADER_STR)
+        csvs = list(sorted(get_all_from(BASE_DIR, '.csv', False)))
+        for c in csvs:
+            if 'ALL_DATA' in c:
+                continue
+            today = os.path.basename(c).replace('.csv','')
+            print(c)
+            with open(c, 'r') as in_f:
+                #skip the header line
+                next(in_f)
+                for line in in_f:
+                    line = today + ',' + line
+                    out_f.write(line)
+
+def all_csv_to_rff():
+    with open(os.path.join(BASE_DIR,'ALL_DATA.csv'),'r') as in_f, open(os.path.join(BASE_DIR,'ALL_DATA.rff'),'wb+') as out_f:
+        reader = csv.DictReader(in_f)
+        last_day = None
+        for row in reader:
+            ts = ciso8601.parse_datetime(row['Date'])
+            if ts != last_day:
+                print(ts)
+                last_day=ts
+            r = struct.pack(RFF_LINE_FORMAT,
+                        int(time.mktime(ts.timetuple())),
+                        bytes(row['Symbol'].encode('utf-8')),
+                        float(row['Open']),
+                        float(row['High']),
+                        float(row['Low']),
+                        float(row['Close']),
+                        float(row['Volume']),
+                        float(row['Turnover']),
+                        float(row['Unadjusted_Close']),
+                        float(row['Close_ma200']),
+                        float(row['Average_Float']),
+                        0.0,
+                        0.0,
+                        0.0)
+            out_f.write(r)
+            #print(r)
+
+
 def generate_trading_securities():
     subdirs = [
         'AUEquities',
@@ -165,4 +218,6 @@ if __name__ == '__main__':
     #convert_all_to_feather(False)
     #sort_by_float()
     #del_all_csvs()
-    generate_trading_securities()
+    #generate_trading_securities()
+    #concat_dailies()
+    all_csv_to_rff()

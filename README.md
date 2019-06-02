@@ -15,24 +15,17 @@ data format:
 
 Everthing is little endian unless otherwise stated
 
-bytes 0 - 3: 
-  * 0 - '.'
-  * 1 - 'r'
-  * 2 - 'f'
-  * 3 - 'f'
-  
-* bytes 4-7 : reserved
-* bytes 8 - 15: int64_t num rows (does NOT include a row for "column names")
-* bytes 16 - 23: int64_t num columns (including "key" column)
-* bytes 24 - 32: int64_t offset into file of start of row data
-* bytes 33 - 40: reserved
-* bytes 41 - 48: reserved
-* bytes 49 - 127: reserved
-* bytes 128 - 128 + 32*num columns: columns names entries
-  * each entry is a 32 byte c string for max 31 characters + terminating '\0'
-  * Date column should be the 0th entry
-* row data start
-  * must be 128 byte aligned
-  * row[0] is int64 datetime
-  * row[1] is float64 value for first columns that isn't Date
-  * row[2] etc...
+bytes 0-7 - 64 bit int timestamp
+bytes 8-31 - 23 bytes + '\0' for name
+bytes 32-39 - open - f64
+bytes 40-47 - high - f64
+bytes 48-55 - low - f64
+bytes 56-63 - close - f64
+bytes 64-71 - volume - f64
+bytes 72-79 - turnover - f64
+bytes 80-87 - unadjusted_close - f64
+bytes 88-95 - ma_200 - f64
+bytes 96-103 - average_float - f64
+bytes 104 - 111 - padding
+bytes 112 - 120 - padding
+bytes 121 - 128 - padding

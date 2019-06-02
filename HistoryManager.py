@@ -18,6 +18,8 @@ multi security portfolio backtesting. until then, try not to add too many
 def feather_name(today):
     return os.path.join(BASE_DIR, today.strftime('%Y-%m-%d') + '.feather')
 
+
+
 class HistoryManager:
 
     def __init__(self, stockpyler):
@@ -40,14 +42,19 @@ class HistoryManager:
         self._sp = stockpyler
         self.today = self._earliest
         self._num_processed = 0
-        self._load_next_feather()
+        self.read_rff(os.path.join(BASE_DIR,'ALL_DATA.rff'))
+        x = self._rff_handle.read(128)
+        while x:
+            x = self._rff_handle.read(128)
+            #print(x)
 
-    def _load_next_feather(self):
-        f = open(feather_name(self.today), 'r')
-        handle = mmap.mmap(f.fileno(), 0, prot=mmap.PROT_READ)
-        self._mmap_handle = handle
-        self._feather_handle = f
-        return feather.read_dataframe(handle)
+    def read_rff(self, path):
+        f = open(path,'rb')
+        mmap_handle = mmap.mmap(f.fileno(), 0, prot=mmap.PROT_READ)
+        asdf = mmap_handle[:128]
+        self._mmap_handle = mmap_handle
+        self._rff_handle = f
+
 
     def start(self):
         pass
@@ -60,8 +67,5 @@ class HistoryManager:
             if self.today > self._latest:
                 self._done = True
                 return
-        self._mmap_handle.close()
-        self._feather_handle.close()
-        self.df = self._load_next_feather()
 
 
