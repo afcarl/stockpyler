@@ -1,12 +1,18 @@
 import os
 import common
 import ciso8601
+import sys
 import pandas as pd
 import feather
 import json
 import mmap
 from common import BASE_DIR
 import datetime
+
+THIS_DIR = os.path.abspath(os.path.dirname(__file__))
+import pyximport; pyximport.install(language_level=3,setup_args={'include_dirs':THIS_DIR})
+import rff
+import os
 
 '''HistoryManager
 
@@ -42,18 +48,11 @@ class HistoryManager:
         self._sp = stockpyler
         self.today = self._earliest
         self._num_processed = 0
-        self.read_rff(os.path.join(BASE_DIR,'ALL_DATA.rff'))
-        x = self._rff_handle.read(128)
-        while x:
-            x = self._rff_handle.read(128)
-            #print(x)
+        self.rff = rff.RFF(os.path.join(BASE_DIR,'ALL_DATA.rff'))
+        print(self.rff.next_line().close)
+        print(self.rff.get_line(5).symbol)
+        sys.exit(1)
 
-    def read_rff(self, path):
-        f = open(path,'rb')
-        mmap_handle = mmap.mmap(f.fileno(), 0, prot=mmap.PROT_READ)
-        asdf = mmap_handle[:128]
-        self._mmap_handle = mmap_handle
-        self._rff_handle = f
 
 
     def start(self):
