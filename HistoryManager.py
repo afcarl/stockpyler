@@ -10,7 +10,10 @@ from common import BASE_DIR
 import datetime
 
 THIS_DIR = os.path.abspath(os.path.dirname(__file__))
-import pyximport; pyximport.install(language_level=3,setup_args={'include_dirs':THIS_DIR})
+import pyximport
+pyximport.install(language_level=3,
+                  setup_args={'include_dirs': THIS_DIR,
+                            'extra_compile_args': ['-O3', '-march=native']})
 import rff
 import os
 
@@ -49,10 +52,18 @@ class HistoryManager:
         self.today = self._earliest
         self._num_processed = 0
         self.rff = rff.RFF(os.path.join(BASE_DIR,'ALL_DATA.rff'))
+        print(self.rff.len)
         print(self.rff.next_line().close)
         print(self.rff.get_line(5).symbol)
-        sys.exit(1)
-
+        l = self.rff.next_line()
+        index = 0
+        while l:
+            #print(index)
+            index+=1
+            if index % 1000000 == 0:
+                print(index)
+            l = self.rff.next_line()
+        sys.exit(0)
 
 
     def start(self):

@@ -14,6 +14,7 @@ cdef extern from "rff_tools.c":
       void* mmap_handle;
       rff_line_t* lines;
       int64_t len;
+      int64_t pos;
       bool done;
 
     cdef int rff_init(char* path, rff_t* rff)
@@ -79,15 +80,26 @@ cdef class RFF:
         return get_line(r)
 
     def get_line(self, index):
+        if index >= self.len:
+            return None
         r = rff_line_at(&self.rff, index)
         return get_line(r)
+
+    @property
+    def len(self):
+        return self.rff.len
+    @property
+    def pos(self):
+        return self.rff.pos
 
 
 
 
 
 cdef get_line(rff_line_t* line):
-    return RFFLine()._setup(line)
+    if line:
+        return RFFLine()._setup(line)
+    return None
 
 def py_rff_init(str path):
     return RFF(path)
