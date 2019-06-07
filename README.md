@@ -29,3 +29,16 @@ bytes 96-103 - average_float - f64
 bytes 104 - 111 - padding
 bytes 112 - 120 - padding
 bytes 121 - 128 - padding
+
+*.rff2 (or *.rff3)
+bytes 0-3 32 bit timestamp index
+bytes 4-7 32 bit names index
+bytes 8-15 - open - f64
+bytes 16-23 - high - f64
+bytes 24-31 - low - f64
+bytes 32-39 - close - f64
+bytes 40-47 - volume - f64
+bytes 48-55 - ma_200 - f64
+bytes 56-63 - padding
+bytes 64-127 - padding(*.rff3 only)
+ 

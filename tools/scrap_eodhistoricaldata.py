@@ -8,6 +8,8 @@ import pandas as pd
 from pandas.io.common import urlencode
 from pandas.api.types import is_number
 import io
+import time
+import datetime
 import os
 
 EOD_HISTORICAL_DATA_API_URL = "https://eodhistoricaldata.com/api"
@@ -68,14 +70,14 @@ def _sanitize_dates(start, end):
 
     return start, end
 
-def get_api_key(env_var='EOD_HISTORICAL_API_KEY'):
+def get_api_key():
     """
     Returns API key from environment variable
     API key must have been set previously
     bash> export EOD_HISTORICAL_API_KEY="YOURAPI"
     Returns default API key, if environment variable is not found
     """
-    return os.environ.get(env_var, 'EOD_HISTORICAL_API_KEY')
+    return os.environ.get('EOD_HISTORICAL_API_KEY')
 
 #Exchange Code	Exchange Name
 EXCHANGES = [
@@ -158,7 +160,8 @@ def get_bulk_eod(exchange, date, api_key, session=None):
     url = EOD_HISTORICAL_DATA_API_URL + endpoint
     params = {
         "api_token": api_key,
-        "date": date
+        "date": date,
+        'filter':'extended',
     }
     r = session.get(url, params=params)
     if r.status_code == requests.codes.ok:
@@ -169,4 +172,24 @@ def get_bulk_eod(exchange, date, api_key, session=None):
         params["api_token"] = "YOUR_HIDDEN_API"
         raise RemoteDataError(r.status_code, r.reason, _url(url, params))
 
-print(get_bulk_eod('US', '2019-01-03', get_api_key()))
+def get_whole_history_for(exchange):
+    BASE_PATH = '/home/forrest/eod_bulk_data/'
+    now = datetime.datetime.today()
+    while True:
+        while now.isoweekday() in [6,7]:
+            now -= datetime.timedelta(days=1)
+        date_str = str(now.year) + '-' + str(now.month) + '-' + str(now.day)
+        out_path = os.path.join(BASE_PATH, exchange + '_' + date_str + '.csv')
+        if os.path.isfile(out_path):
+            now -= datetime.timedelta(days=1)
+            continue
+        print(now)
+        ret = get_bulk_eod(exchange,date_str,get_api_key())
+        ret.to_csv(out_path,float_format='%g')
+        now -= datetime.timedelta(days=1)
+
+
+
+
+get_whole_history_for('KO')
+print(get_bulk_eod('KO', '2019-01-01', get_api_key()))

@@ -7,6 +7,14 @@ import struct
 import pandas as pd
 import csv
 import time
+import json
+
+THIS_DIR = os.path.abspath(os.path.dirname(__file__))
+import pyximport
+pyximport.install(language_level=3,
+                  setup_args={'include_dirs': os.path.join(THIS_DIR,'..'),
+                            'extra_compile_args': ['-O3', '-march=native']})
+import rff
 
 if os.path.isdir('/mnt/c'):
     BASE_DIR = '/mnt/c/Users/mcdof/Documents/NDExport/'
@@ -177,6 +185,30 @@ def all_csv_to_rff():
             out_f.write(r)
             #print(r)
 
+def gen_master_names():
+    with open(os.path.join(BASE_DIR,'ALL_NAMES.txt'),'w+') as out_f:
+        for fullpath in get_all_from(BASE_DIR,'names.txt'):
+            with open(fullpath) as in_f:
+                out_f.write(in_f.read())
+            print(fullpath)
+
+def gen_per_stock_indicies():
+    INDEX_MAP = dict()
+    my_rff = rff.RFF(os.path.join(BASE_DIR,'ALL_DATA.rff'))
+    line = my_rff.next_line()
+    index = 0
+    while line:
+        if index % 1000000 == 0:
+            print(index)
+        if line.symbol not in INDEX_MAP:
+            INDEX_MAP[line.symbol] = []
+        INDEX_MAP[line.symbol].append(index)
+        index+=1
+        line = my_rff.next_line()
+    print(my_rff)
+    with open(os.path.join(BASE_DIR,'per_stock_rff_indices.json'),'w+') as f:
+        json.dump(INDEX_MAP,f)
+    pass
 
 def generate_trading_securities():
     subdirs = [
@@ -220,4 +252,6 @@ if __name__ == '__main__':
     #del_all_csvs()
     #generate_trading_securities()
     #concat_dailies()
-    all_csv_to_rff()
+    #all_csv_to_rff()
+    #gen_master_names()
+    gen_per_stock_indicies()
