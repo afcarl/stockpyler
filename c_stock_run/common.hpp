@@ -1,10 +1,9 @@
 #pragma once
 
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cstddef>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
 
 #define container_of(ptr, type, member)                                                                                \
   ({                                                                                                                   \
@@ -55,10 +54,6 @@ typedef _vector(f64, 4) v4d;
 
 #undef _vector
 
-typedef union f32_u32_convert_t {
-	f32 f;
-	u32 i;
-} f32_u32_convert_t;
 
 #define warn(msg, ...)                                                                                                 \
   do {                                                                                                                 \

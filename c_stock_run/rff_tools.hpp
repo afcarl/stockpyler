@@ -1,29 +1,31 @@
-#include <stdint.h>
-#include <stdio.h>
-#include <stdbool.h>
+#include <cstdint>
+#include <cstdio>
 #include <sys/mman.h>
+
+#include <string>
 
 //#include "rff_tools.h"
 
 #define RFF_LINE_SIZE 128
 
-typedef struct _rff_line_t
+struct RFFLine
 {
   long long int timestamp;
   char symbol[24];
   double open, high, low, close, volume, turnover, unadj_close, close_ma200, averagefloat, _pad0, _pad1, _pad2;
-} rff_line_t;
+};
 
-typedef struct _rff_t{
+class RFF {
   FILE* file_handle;
   void* mmap_handle;
   rff_line_t* lines;
   int64_t len;
   int64_t pos;
   bool done;
-} rff_t;
 
+  RFF(std::string path);
+  ~RFF();
+  RFFLine* next();
+  RFFLine* at(int64_t index);
+};
 
-int rff_init(char* path, rff_t* rff);
-int rff_close(rff_t* rff);
-rff_line_t* next_rff_line(rff_t* rff);
