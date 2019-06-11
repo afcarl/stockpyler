@@ -1,11 +1,8 @@
 #include <stdbool.h>
 #include <time.h>
+#include <map>
 
-#include "common.h"
-#include "rff_tools.h"
+#include "common.hpp"
+#include "history_manager.hpp"
+#include "rff_tools.hpp"
 
-class HistoryManager {
-    bool done;
-    time_t today, earliest_date, latest_date;
-    rff_t rff;
-} ;

@@ -8,7 +8,6 @@ class Strategy:
 
     def __init__(self, stockpyler: Stockpyler.Stockpyler, *args, **kwargs):
         self._sp = stockpyler
-        self._pending_orders = []
 
     def ohlvc(self, security, index):
         return self._sp.hm.ohlcv(security,index)

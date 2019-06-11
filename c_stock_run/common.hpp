@@ -5,6 +5,14 @@
 #include <cstdio>
 #include <cstdlib>
 
+#include <string>
+#include <unordered_map>
+#include <vector>
+#include <memory>
+
+typedef int32_t SecurityID;
+
+
 #define container_of(ptr, type, member)                                                                                \
   ({                                                                                                                   \
     typeof(((type *)0)->member) *__mptr = (ptr);                                                                       \
@@ -107,11 +115,11 @@ typedef _vector(f64, 4) v4d;
     _x > _y ? _x : _y;                                                                                                 \
   })
 
-typedef enum error_type_e
+enum class ErrorType
 {
 	E_SUCCESS,
 	E_FAILURE,
-}error_type_e;
+};
 
 #ifdef __clang__ 
 #define attr_cleanup(cleanup_func) __attribute__((cleanup(cleanup_func)))
