@@ -35,10 +35,27 @@ Order PositionManager::close(SecurityID id, int64_t num_stocks) {
 	if (this->position_size(id) > 0) {
 		return this->sell(id, num_stocks);
 	}
-	else if(this->position_size(id) > 0) {
+	else if(this->position_size(id) < 0) {
 		return this->buy(id, num_stocks);
 	}
 	else {
 		return Order();
 	}
+}
+
+bool PositionManager::in_position(SecurityID id) {
+	return this->position_size(id) != 0;
+}
+
+double PositionManager::current_cash() {
+	return this->cash;
+}
+
+double PositionManager::current_value() {
+	double ret = this->current_cash();
+}
+
+
+void PositionManager::next() {
+
 }

@@ -68,7 +68,8 @@ class Stockpyler;
 
 class PositionManager
 {
-	int64_t current_cash;
+
+	double cash;
 	std::unordered_map<SecurityID, int64_t> positions;
 	std::vector<Order> orders;
 	Stockpyler* sp;
@@ -82,6 +83,9 @@ public:
 
 	void next();
 	void add_position(SecurityID id, int64_t num_stocks);
+	bool in_position(SecurityID id);
 	int64_t position_size(SecurityID id);
 	std::vector<SecurityID> get_positions();
+	double current_cash();
+	double current_value();
 };
